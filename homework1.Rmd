@@ -1,0 +1,105 @@
+---
+title: "ECON4225 Homework 1"
+output: pdf_document
+date: "2025-10-06"
+---
+# Part 1: Overview of the Dataset 
+## Question 1  
+- Households:
+- Variables: 
+
+## Question 2  
+- Average age:
+- Highest age: 
+- Lowest age: 
+
+## Question 3  
+- Average household income: 
+- Average hh income compared to SCF: 
+- Reason for PSID income to differ from SCF: 
+
+## Question 4  
+- Lowest income:
+- Highest income: 
+- Why can lowest income be negative: 
+
+## Question 5  
+- Average age of spouse 
+
+## Question 6
+- Histogram of members per household  
+- Share of households with 5+ members 
+- Share of households with only 1 member 
+- Compare household member distribution with class slide
+
+
+# Part 2: Income Distribution   
+## Question 1
+- Histogram of household income with bins of $5k 
+- Description of histogram findings
+
+## Question 2 
+- Lorenz Curve of household income
+- Description of lorenz curve findings
+
+## Question 3 
+- Coefficient of variation 
+- Compare to SCF 
+
+## Question 4 
+- Income adjusted for number of household heads (filter only for households with spouses, divide income by 2)
+- Lorenz curve of adjusted income alongside regular income 
+- Conclusions from comparison 
+
+## Question 5 
+- 30th, 50th, 90th, 99th percentile of income 
+- 90-30, 90-50, 30-10, 99-50 ratios 
+- Interpretation of ratios
+- Comparison with SCF 
+
+## Question 6 
+- Share of income by quintile 
+- Average income by quintile 
+- Interpretation of results
+- Comparison with SCF (lecture) 
+
+## Question 7 
+- Average income and income share for top 1%
+- Comparison with SCF  
+
+
+# Part 3: Labor Income   
+## Question 1 
+- Create variable of total labor income of household
+- Earnings and share of earnings for each quintile 
+
+## Question 2 
+- Compare distribution of household earnings vs income 
+- Compare share of quintiles
+- Coefficient of variation 
+- Lorenz curve of labor earnings and total household income 
+- Compare relative inequality in labor earnings vs total household income 
+
+## Question 3 
+- Create variable of share of labor earnings in total household income 
+- Average share of labor earnings 
+
+## Question 4 
+- Average share of labor earnings by quintile of income distribution 
+- Share of labor earnings for top 1% 
+- Compare both to SCF
+- Comment on differences 
+
+## Question 5 
+- Filter by households where household head has positive work weeks and positive earnings 
+- Weekly wage of household head 
+- Variance of log of earnings, wages, weeks worked
+- Relative contribution of hours and wages to inequality in labor earnings? 
+- Caveats to this calculation? 
+
+## Question 6 
+- Regression of log wages of household head on age, age^2, education, occupation
+- Residuals 
+- Variance of residuals 
+- Share of inequality explained by age, education and occupation?
+ 
