@@ -89,7 +89,7 @@ Table: Percentage share of PSID households by size
 
 # Part 2: Income Distribution   
 ## Question 1
-The following histogram shows the distribution of household incomes in the PSID, with values above the 99th percentile removed. The distribution is right-skewed, as the median of $55,090 is lower than the mean of $78,266. The majority of households earn less than $100,682, which is the 75th percentile. A small minority of households surveyed have higher household incomes, up to $2.13 million. 
+The following histogram shows the distribution of household incomes in the PSID, with values above the 99th percentile removed. The distribution is right-skewed, as the median of $55,090 is lower than the mean of $78,266. The majority of households earn less than $100,682, which is the 75th percentile. A small minority of households surveyed have higher household incomes, up to $2.13 million. 137 households have no income, and three households have negative income, with the lowest income being $267,900.
 
 
 --------------------------------------------------------
@@ -103,23 +103,110 @@ Table: Distribution of Household Incomes
 ![](homework1_files/figure-latex/hh income hist-1.pdf)<!-- --> 
 
 ## Question 2 
-- Lorenz Curve of household income
-- Description of lorenz curve findings
+The following Lorenz curve visualizes the cumulative share of households (x) against the cumulative share of total household income (y). The dotted line is what the curve would look like at perfect inequality, where 50% of households possess 50% of total household income. The solid red line represents the relationship between cumulative household share and cumulative household income share. 
 
+We see on this curve that the lowest earning 50% of households in the PSID account for only 18% of total household income, and that the bottom 75% of households account for 42% of income. By contrast, the top 10% of highest earning households account for about a third of all household income, and the top 1% of households account for just above 8%. In this dataset, we can tell that higher-earning households account for more than their proportional share of household income.
+![](homework1_files/figure-latex/hh income lorenz-1.pdf)<!-- --> 
+# ?
 ## Question 3 
-- Coefficient of variation 
-- Compare to SCF 
+To further quantify the level of income inequality in the dataset, we can calculate the coefficient of variation by dividing the standard deviation in household income by the mean household income. This produces a coefficient of variation of 1.15, which is ______ compared to the ______ derived from the SCF. 
 
+```
+## [1] "Coefficient of variation of household income: 1.15"
+```
+
+#? 
 ## Question 4 
-- Income adjusted for number of household heads (filter only for households with spouses, divide income by 2)
-- Lorenz curve of adjusted income alongside regular income 
-- Conclusions from comparison 
+When we adjust this curve for the number of household heads present, the distance from the line of perfect equality decreases. On the yellow curve representing the relationship between adjusted income share and population share, we see that the bottom 50% of households account for 21% of income, compared to the 18% on the non-adjusted curve. 
+
+This indicates that some of the inequality among households may be attributed to differences in household size and the number of earners. 
+
+
+``` r
+psid_lorenz_adj <- psid %>%
+  mutate(spouse_adjust = ifelse(SPOUSE_PRESENT == 1, 2, 1),
+    income_per_head = INCOME/spouse_adjust) %>%
+    arrange(income_per_head) %>%
+  mutate(
+    INC_SHARE = income_per_head / sum(income_per_head),
+    HHS_SHARE = 1 / nrow(.),
+    CUM_HH_SHARE = 100*cumsum(HHS_SHARE),
+    CUM_INC_SHARE = 100*cumsum(INC_SHARE))
+
+ggplot() +
+  geom_line(data = psid_lorenz, aes(x = CUM_HH_SHARE, y = CUM_INC_SHARE, color = "PSID Households")) +
+  geom_line(data = perfect_equality, aes(x = x, y = y, color = "perfect equality"), linetype = "dotted") +
+  geom_line(data = psid_lorenz_adj, aes(x = CUM_HH_SHARE, y = CUM_INC_SHARE, color = "PSID Households: Adjusted")) +
+  theme_minimal() +
+  scale_color_manual(values = c("gray30", "tomato", "goldenrod1"), name = "") + 
+  labs(
+    title = "Lorenz Curve of Household Income",
+    subtitle = "Households and income, PSID",
+    x = "Cumulative share of households",
+    y = "Cumulative share of total income"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+![](homework1_files/figure-latex/lorenz curve comparison-1.pdf)<!-- --> 
 
 ## Question 5 
-- 30th, 50th, 90th, 99th percentile of income 
-- 90-30, 90-50, 30-10, 99-50 ratios 
+The table below displays the 30th, 50th, 90th, and 99th percentiles of household income in the dataset. The wide gap between the 50th and 90th and 50th and 99th percentiles give us a sense of the income inequality among the households, but percentiles themselves are insufficient. 
+
+``` r
+data.frame(percentile = c("30th", "50th", "90th", "99th"), 
+           value = c(paste("$",round(quantile(psid$INCOME, 0.3), 2), sep=""), 
+                     paste("$",round(quantile(psid$INCOME, 0.5), 2), sep=""),
+                     paste("$",round(quantile(psid$INCOME, 0.9), 2), sep=""),
+                     paste("$",round(quantile(psid$INCOME, 0.99), 2), sep=""))) %>%
+  as_tibble() %>%
+  pander(caption = "PSID Household Income Percentiles")
+```
+
+
+-----------------------
+ percentile    value   
+------------ ----------
+    30th      $33107.5 
+
+    50th       $55090  
+
+    90th      $161188  
+
+    99th      $396420  
+-----------------------
+
+Table: PSID Household Income Percentiles
+The percentile ratios in the table reveal a markedly unequal income distribution. Households at the top earn several times more than those in the middle or bottom. Specifically, households at the 90th percentile earn nearly three times the median income, while those at the 99th percentile earn 7.2 times the median, indicating extreme concentration of income at the very top. The 2.67 ratio between the 30th and 10th percentiles shows that inequality at the lower end exists but is considerably smaller than that among top earners.
+
+``` r
+data.frame(percentile_ratio = c("90-30", "90-50", "30-10", "99-50"), 
+           value = c(round(quantile(psid$INCOME, 0.9)/quantile(psid$INCOME, 0.3), 2), 
+                     round(quantile(psid$INCOME, 0.9)/quantile(psid$INCOME, 0.5), 2),
+                     round(quantile(psid$INCOME, 0.3)/quantile(psid$INCOME, 0.1), 2),
+                     round(quantile(psid$INCOME, 0.99)/quantile(psid$INCOME, 0.5), 2))) %>%
+  as_tibble() %>%
+  pander(caption = "PSID Household Income Percentile Ratios")
+```
+
+
+--------------------------
+ percentile_ratio   value 
+------------------ -------
+      90-30         4.87  
+
+      90-50         2.93  
+
+      30-10         2.67  
+
+      99-50          7.2  
+--------------------------
+
+Table: PSID Household Income Percentile Ratios
+
 - Interpretation of ratios
 - Comparison with SCF 
+
 
 ## Question 6 
 - Share of income by quintile 
