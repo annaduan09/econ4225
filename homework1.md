@@ -71,18 +71,7 @@ Of the 4,523 households with a spouse of the household head present, the average
 ```
 
 ## Question 6: household members
-Households with only 1 member make up 28.45% of the data. Households with 5 or more members make up 11.29%. 
-![](homework1_files/figure-latex/hh size hist-1.pdf)<!-- --> 
-
-
-``` r
-psid_hh_size %>%
-  group_by(size_group) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  mutate(pct = 100*round(count/sum(count),4)) %>%
-  pander()
-```
-
+Households with only 1 member make up 28.45% of the data. Households with 5 or more members make up 11.29%. Compared to the histogram shown in class, the PSID has fewer 2-member households and more 3-5 member households. In both datasets, about 28% of households have one member. The PSID dataset has a smaller share of two-member households: only 30.43% compared to the nearly 35% shown on slide 2 [what dataset is this?]. PSID has a slightly larger share of households with 3 members: 15.95%, compared to the slide's 15%; a 13.88% share of 4-member households, compared to the slide's 12.5%; and a 7.2% share of 5-member households, compared to just past 5% in the slide. 
 
 ----------------------------
  size_group   count    pct  
@@ -94,10 +83,24 @@ psid_hh_size %>%
      5+       1024    11.29 
 ----------------------------
 
+Table: Percentage share of PSID households by size
+
+![](homework1_files/figure-latex/hh size hist-1.pdf)<!-- --> 
+
 # Part 2: Income Distribution   
 ## Question 1
-- Histogram of household income with bins of $5k 
-- Description of histogram findings
+The following histogram shows the distribution of household incomes in the PSID, with values above the 99th percentile removed. The distribution is right-skewed, as the median of $55,090 is lower than the mean of $78,266. The majority of households earn less than $100,682, which is the 75th percentile. A small minority of households surveyed have higher household incomes, up to $2.13 million. 
+
+
+--------------------------------------------------------
+  Min.     1st Qu.   Median   Mean    3rd Qu.    Max.   
+--------- --------- -------- ------- --------- ---------
+ -267900    28000    55090    78266   100681    2125100 
+--------------------------------------------------------
+
+Table: Distribution of Household Incomes
+
+![](homework1_files/figure-latex/hh income hist-1.pdf)<!-- --> 
 
 ## Question 2 
 - Lorenz Curve of household income
