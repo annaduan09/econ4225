@@ -7,78 +7,92 @@ output:
 date: "2025-10-06"
 author: "Anna Duan"
 ---
-```{r setup, echo=FALSE, message=FALSE, include=FALSE, warning=FALSE}
-library(tidyverse)
-library(ggplot2)
-library(pander)
 
-psid <- read_csv("data/PSID_CLEAN.csv")
-```
 
 # Part 1: Overview of the Dataset 
 ## Question 1: household and variable count
 This dataset has 9066 households and 38 variables, including the household ID.
-```{r households, echo=FALSE}
-print(paste("rows:" , nrow(psid)))
-names(psid)
+
+```
+## [1] "rows: 9066"
+```
+
+```
+##  [1] "ID"               "AGE_HEAD"         "AGE_SPOUSE"       "SEX_HEAD"        
+##  [5] "SEX_SPOUSE"       "EDU_HEAD"         "EDU_SPOUSE"       "OCC_HEAD"        
+##  [9] "OCC_SPOUSE"       "STATE"            "MARITAL"          "HOUSEHOLD_SIZE"  
+## [13] "CHILDREN"         "SPOUSE_PRESENT"   "WEIGHT"           "INCOME"          
+## [17] "HEAD_LABOR"       "SPOUSE_LABOR"     "WEEKS_HEAD"       "WEEKS_SPOUSE"    
+## [21] "WEEKS_OUT_HEAD"   "WEEKS_OUT_SPOUSE" "EXP"              "GAS"             
+## [25] "FOOD_HOME"        "FOOD_DELIV"       "FOOD_OUT"         "RENT"            
+## [29] "EDUC_EXP"         "CHILDCARE"        "TRIPS"            "WEALTH"          
+## [33] "HOUSE_VALUE"      "MORTGAGE"         "MORT_PAY"         "HOME_EQUITY"     
+## [37] "BUSINESS_VAL"     "PROPERTY_TAX"
 ```
 
 ## Question 2  
 The average age of the household head is 46.25. The highest age is 102 and the lowest age is 18.
-```{r age, echo=FALSE}
-print(paste("Mean age:" , round(mean(psid$AGE_HEAD),2)))
-print(paste("Highest age:" , round(max(psid$AGE_HEAD),2)))
-print(paste("Lowest age:" , round(min(psid$AGE_HEAD),2)))
+
+```
+## [1] "Mean age: 46.25"
+```
+
+```
+## [1] "Highest age: 102"
+```
+
+```
+## [1] "Lowest age: 18"
 ```
 
 ## Question 3: Income
 The average household income is $78,265.69. This is substantially lower the $142k reported by the SCF in 2022 (Section 1.2, slide 9). One possible reason for this difference is that the SCF surveys a small sample, focusing on high-income individuals, resulting in a less representative mean. The PSID has a larger sample, with less emphasis on the top of the income distribution.
-```{r income, echo=FALSE}
-print(paste("Mean household income:" , round(mean(psid$INCOME),2)))
+
+```
+## [1] "Mean household income: 78265.69"
 ```
 
 ## Question 4: income range  
 The household incomes in the dataset have a wide range: the lowest is -$267,900 and the highest is $2,125,100. The households with negative income are likely in debt.
-```{r income min max, echo=FALSE}
-print(paste("Lowest household income:" , round(min(psid$INCOME),2)))
-print(paste("Highest household income:" , round(max(psid$INCOME),2)))
+
+```
+## [1] "Lowest household income: -267900"
+```
+
+```
+## [1] "Highest household income: 2125100"
 ```
 
 ## Question 5: spouse age  
 Of the 4,523 households with a spouse of the household head present, the average age of the spouse is 45.64 years.
-```{r age of spouse, echo=FALSE}
-psid_spouse <- psid %>%
-  filter(SPOUSE_PRESENT==1 & AGE_SPOUSE>0)
 
-print(paste("Mean spouse age:" , round(mean(psid_spouse$AGE_SPOUSE),2)))
+```
+## [1] "Mean spouse age: 45.64"
 ```
 
 ## Question 6: household members
-Households with only 1 member make up 28.45% of the data. Households with 5 or more members make up 11.29%. Compared to the histogram shown in class, this dataset has _____.
-```{r hh size hist, echo=FALSE}
-psid_hh_size <- psid %>%
-  mutate(size_group = case_when(
-    HOUSEHOLD_SIZE == 1 ~ "1",
-    HOUSEHOLD_SIZE >= 2 & HOUSEHOLD_SIZE <= 4 ~ "2–4",
-    HOUSEHOLD_SIZE >= 5 ~ "5+"
-  ))
+Households with only 1 member make up 28.45% of the data. Households with 5 or more members make up 11.29%. 
+![](homework1_files/figure-latex/hh size hist-1.pdf)<!-- --> 
 
-  ggplot(data = psid_hh_size, aes(x = HOUSEHOLD_SIZE, fill = size_group)) +
-  geom_histogram(bins = 12, color = "white") +
-  scale_fill_manual(values = c("1" = "#4C9BE8", "2–4" = "#3EB489", "5+" = "#E84A5F")) +
-  theme_minimal() +
-  labs(title = "Distribution of Household Size in the PSID", fill = "") +
-  theme(legend.position="bottom")
-```
 
-```{r hh size summary, echo=FALSE}
+``` r
 psid_hh_size %>%
   group_by(size_group) %>%
   summarise(count = n(), .groups = "drop") %>%
   mutate(pct = 100*round(count/sum(count),4)) %>%
   pander()
-  
 ```
+
+
+----------------------------
+ size_group   count    pct  
+------------ ------- -------
+     1        2579    28.45 
+
+    2–4       5463    60.26 
+
+     5+       1024    11.29 
+----------------------------
 
 # Part 2: Income Distribution   
 ## Question 1
