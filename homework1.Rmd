@@ -139,20 +139,20 @@ ggplot() +
   ) +
   theme(legend.position = "bottom")
 ```
-# ?
+# ? SCF
 ## Question 3 
 To further quantify the level of income inequality in the dataset, we can calculate the coefficient of variation by dividing the standard deviation in household income by the mean household income. This produces a coefficient of variation of 1.15, which is ______ compared to the ______ derived from the SCF. 
 ```{r coefficient of variation hh income, echo=FALSE}
 print(paste("Coefficient of variation of household income:", round(sd(psid$INCOME)/mean(psid$INCOME),2)))
 ```
 
-#? 
+#? adjustment method
 ## Question 4 
 When we adjust this curve for the number of household heads present, the distance from the line of perfect equality decreases. On the yellow curve representing the relationship between adjusted income share and population share, we see that the bottom 50% of households account for 21% of income, compared to the 18% on the non-adjusted curve. 
 
 This indicates that some of the inequality among households may be attributed to differences in household size and the number of earners. 
 
-```{r lorenz curve comparison}
+```{r lorenz curve comparison, echo=FALSE}
 psid_lorenz_adj <- psid %>%
   mutate(spouse_adjust = ifelse(SPOUSE_PRESENT == 1, 2, 1),
     income_per_head = INCOME/spouse_adjust) %>%
@@ -181,7 +181,7 @@ ggplot() +
 
 ## Question 5 
 The table below displays the 30th, 50th, 90th, and 99th percentiles of household income in the dataset. The wide gap between the 50th and 90th and 50th and 99th percentiles give us a sense of the income inequality among the households, but percentiles themselves are insufficient. 
-```{r hh income percentiles}
+```{r hh income percentiles, echo=FALSE}
 data.frame(percentile = c("30th", "50th", "90th", "99th"), 
            value = c(paste("$",round(quantile(psid$INCOME, 0.3), 2), sep=""), 
                      paste("$",round(quantile(psid$INCOME, 0.5), 2), sep=""),
@@ -191,7 +191,7 @@ data.frame(percentile = c("30th", "50th", "90th", "99th"),
   pander(caption = "PSID Household Income Percentiles")
 ```
 The percentile ratios in the table reveal a markedly unequal income distribution. Households at the top earn several times more than those in the middle or bottom. Specifically, households at the 90th percentile earn nearly three times the median income, while those at the 99th percentile earn 7.2 times the median, indicating extreme concentration of income at the very top. The 2.67 ratio between the 30th and 10th percentiles shows that inequality at the lower end exists but is considerably smaller than that among top earners.
-```{r percentile ratios}
+```{r percentile ratios, echo=FALSE}
 data.frame(percentile_ratio = c("90-30", "90-50", "30-10", "99-50"), 
            value = c(round(quantile(psid$INCOME, 0.9)/quantile(psid$INCOME, 0.3), 2), 
                      round(quantile(psid$INCOME, 0.9)/quantile(psid$INCOME, 0.5), 2),
@@ -201,20 +201,67 @@ data.frame(percentile_ratio = c("90-30", "90-50", "30-10", "99-50"),
   pander(caption = "PSID Household Income Percentile Ratios")
 ```
 
-- Interpretation of ratios
+# ? SCF
 - Comparison with SCF 
 
 
 ## Question 6 
-- Share of income by quintile 
-- Average income by quintile 
-- Interpretation of results
-- Comparison with SCF (lecture) 
+The following table further illustrates this pattern of income inequality among PSID households: the greatest disparities between consecutive quintiles are between quintiles 2 and 1 and quintiles 5 and 4. Quintile 2 has a mean income of $33,188, 2.76 times the first quintile's mean income of $12,003. The second quintile's income share of 8.5% is 2.74 times that of the first quintile (3.1%). The fifth quintile's income of $199,894 is 2.21 times that of the fourth quintile ($90,408). The fifth quintile's income share of 51.1% is 2.39 times that of the fourth quintile. It's also notable that the income share of the top quintile is greater than that of the remaining 4 quintiles. Taken together, this shows the high overall income inequality among PSID households, as well as the heightened inequality at the bottom and top of the distributions. 
+
+```{r income quintiles table, echo=FALSE}
+psid_quintile <- psid %>%
+  select(INCOME) %>%
+  mutate(quintile = case_when(INCOME <= quantile(psid$INCOME, 0.2) ~ "1",
+                              INCOME <= quantile(psid$INCOME, 0.4) ~ "2",
+                              INCOME <= quantile(psid$INCOME, 0.6) ~ "3",
+                              INCOME <= quantile(psid$INCOME, 0.8) ~ "4",
+                              TRUE ~ "5")) %>%
+  group_by(quintile) %>%
+  summarize(income_quintile = sum(INCOME),
+            mean_income = mean(INCOME)) %>%
+  mutate(income_share = income_quintile/sum(income_quintile)) %>%
+  select(quintile, income_share, mean_income)
+
+psid_quintile %>%
+  mutate(income_share = percent(income_share),
+         mean_income=dollar(mean_income)) %>%
+  pander(caption="Share of total household income and mean income by quintile")
+```
+
+```{r income quintile viz}
+psid_quintile %>%
+  ggplot(aes(x = quintile, y = income_share)) +
+  geom_col(fill = "darkslategray") +
+  geom_text(aes(label = percent(income_share)),
+            vjust = -0.3, size = 3.5) +
+  scale_y_continuous(labels = percent) +
+  labs(title="Top 20% of PSID households earns more income than bottom 80%", subtitle= "Share of total household income by quintile", x = "Income Quintile", y = "Share of Total Income") +
+  theme_minimal()
+
+```
+# ? SCF
+dollar(mean_income)
 
 ## Question 7 
-- Average income and income share for top 1%
-- Comparison with SCF  
+As discussed in class, quintiles can obfuscate the inequality within the top of the distribution. Looking at the top 1% of high earning households, we see that their mean income ($639,974) is 8.81 times that of the bottom 99% ($72,570), and 3.2 times that of the top 20%. In terms of income share, the top 1% accounts for 8% of all household income, making up nearly one-sixth of the top quintile's share. Even within the top quintile, there is drastic inequality between the highest and lowest earners. 
+```{r income top 1%, echo=FALSE}
+psid_1pct <- psid %>%
+  select(INCOME) %>%
+  mutate(group = case_when(INCOME > quantile(psid$INCOME, 0.99) ~ "top 1%",
+                              TRUE ~ "bottom 99%")) %>%
+  group_by(group) %>%
+  summarize(income_group = sum(INCOME),
+            mean_income = mean(INCOME)) %>%
+  mutate(income_share = income_group/sum(income_group)) %>%
+  select(group, income_share, mean_income)
 
+psid_1pct %>%
+  mutate(income_share = percent(income_share),
+         mean_income=dollar(mean_income)) %>%
+  pander(caption="Share of total household income and mean income held by the top 1%")
+```
+? SCF
+compare with scf distribution 
 
 # Part 3: Labor Income   
 ## Question 1 
