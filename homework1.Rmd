@@ -21,8 +21,8 @@ psid <- read_csv("data/PSID_CLEAN.csv")
 ## Question 1: household and variable count
 This dataset has 9066 households and 38 variables, including the household ID.
 ```{r households, echo=FALSE}
-print(paste("rows:" , nrow(psid)))
-names(psid)
+print(paste("PSID row count:" , nrow(psid)))
+print(paste("PSID variable count:", length(names(psid))))
 ```
 
 ## Question 2: age of household head  
@@ -34,29 +34,29 @@ print(paste("Lowest age:" , round(min(psid$AGE_HEAD),2)))
 ```
 
 ## Question 3: average household income  
-The average household income is $78,265.69. This is substantially lower the $142k reported by the SCF in 2022 (Section 1.2, slide 9). One possible reason for this difference is that the SCF surveys a small sample, focusing on high-income individuals, resulting in a less representative mean. The PSID has a larger sample, with less emphasis on the top of the income distribution.
+The average household income is $78,265.69. This is substantially lower the $142,000 reported by the SCF in 2022 (Section 1.2, slide 9). One possible reason for this difference is that the SCF surveys a small sample, focusing on high-income individuals, resulting in a less representative mean. The PSID has a larger sample, with less emphasis on the top of the income distribution.
 ```{r income, echo=FALSE}
 print(paste("Mean household income:" , round(mean(psid$INCOME),2)))
 ```
 
 ## Question 4: income range   
-The household incomes in the dataset have a wide range: the lowest is -$267,900 and the highest is $2,125,100. The households with negative values likely incurred business or other losses in the survey year, resulting in negative net income.
+The household incomes in the dataset have a wide range: the lowest is -$267,900 and the highest is $2,125,100. The households with negative incomes likely incurred business or other losses in the survey year, resulting in negative household income.
 ```{r income min max, echo=FALSE}
 print(paste("Lowest household income:" , round(min(psid$INCOME),2)))
 print(paste("Highest household income:" , round(max(psid$INCOME),2)))
 ```
 
 ## Question 5: age of household head's spouse     
-Of the 4,523 households with a spouse of the household head present, the average age of the spouse is 45.64 years.
+Of the 4,523 households with a spouse present, the average age of the spouse is 45.64 years.
 ```{r age of spouse, echo=FALSE}
 psid_spouse <- psid %>%
-  filter(SPOUSE_PRESENT==1 & AGE_SPOUSE>0)
+  filter(SPOUSE_PRESENT==1)
 
 print(paste("Mean spouse age:" , round(mean(psid_spouse$AGE_SPOUSE),2)))
 ```
 
 ## Question 6: household size    
-Households with only 1 member make up 28.45% of the data. Households with 5 or more members make up 11.29%. Compared to the histogram shown in class, the PSID has fewer 2-member households and more 3-5 member households. In both datasets, about 28% of households have one member. The PSID dataset has a smaller share of two-member households: only 30.43% compared to the nearly 35% shown on slide 2 [what dataset is this?]. PSID has a slightly larger share of households with 3 members: 15.95%, compared to the slide's 15%; a 13.88% share of 4-member households, compared to the slide's 12.5%; and a 7.2% share of 5-member households, compared to just past 5% in the slide. 
+The average household in the dataset has 2.6 members. Households with only 1 member make up 28.45% of the data. Households with 5 or more members make up 11.29%. 
 ```{r hh size summary, echo=FALSE}
 psid_hh_size <- psid %>%
   mutate(size_group = case_when(
@@ -74,8 +74,7 @@ psid_hh_size %>%
             pct = sum(pct)) %>%
   pander(caption = "Percentage share of PSID households by size")
 ```
-
-
+The histogram below shows the distribution of households by member count in the PSID dataset. Compared to the histogram shown in class, the PSID has fewer 2-member households and more 3-5 member households. In both datasets, about 28% of households have one member. The PSID dataset has a smaller share of two-member households: only 30.43% compared to the nearly 35% shown on slide 2. PSID has a slightly larger share of households with 3 members: 15.95%, compared to the slide's 15%; a 13.88% share of 4-member households, compared to the slide's 12.5%; and a 7.2% share of 5-member households, compared to just past 5% in the slide. 
 
 ```{r hh size hist, echo=FALSE}
 ggplot(psid_hh_size, aes(x = HOUSEHOLD_SIZE, y = pct, fill = size_group)) +
@@ -83,12 +82,12 @@ ggplot(psid_hh_size, aes(x = HOUSEHOLD_SIZE, y = pct, fill = size_group)) +
   theme_minimal() +
   scale_y_continuous(labels = label_percent(scale = 1)) +
   scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) +
+  scale_fill_manual(values = c("darkslategray2", "darkslategray4", "darkslategray")) +
   labs(
-    title = "Most households have fewer than 5 members",
-    subtitle = "Distribution of households by number of members, PSID",
+    title = "Distribution of households by number of members, PSID",
     x = "Household Size",
-    y = "Percentage share",
-    fill = ""
+    y = "Percentage share of PSID households",
+    fill = "Members"
   ) +
   theme(legend.position = "bottom")
 
@@ -96,7 +95,7 @@ ggplot(psid_hh_size, aes(x = HOUSEHOLD_SIZE, y = pct, fill = size_group)) +
 
 # Part 2: Income Distribution    
 ## Question 1: distribution of household income  
-The following histogram shows the distribution of household incomes in the PSID, with values above the 99th percentile removed. The distribution is right-skewed, as the median of $55,090 is lower than the mean of $78,266. The majority of households earn less than $100,682, which is the 75th percentile. A small minority of households surveyed have higher household incomes, up to $2.13 million. 137 households have no income, and three households have negative income, with the lowest income being $267,900.
+The following histogram shows the distribution of household incomes in the PSID. The distribution is right-skewed, as the median of $55,090 is lower than the mean of $78,266. The majority of households earn less than $100,682, which is the 75th percentile. 25% of households surveyed have higher household incomes, up to $2.13 million. 137 households have no income, and three households have negative income, with the lowest income being -$267,900.
 
 ```{r hh income hist, echo=FALSE}
 summary(psid$INCOME) %>%
@@ -115,9 +114,8 @@ ggplot(psid, aes(x = INCOME/1000)) +
 ```
 
 ## Question 2: household income Lorenz curve   
-The following Lorenz curve visualizes the cumulative share of households (x) against the cumulative share of total household income (y). The dotted line is what the curve would look like at perfect inequality, where 50% of households possess 50% of total household income. The solid red line represents the relationship between cumulative household share and cumulative household income share. 
-
-We see on this curve that the lowest earning 50% of households in the PSID account for only 18% of total household income, and that the bottom 75% of households account for 42% of income. By contrast, the top 10% of highest earning households account for about a third of all household income, and the top 1% of households account for just above 8%. In this dataset, we can tell that higher-earning households account for more than their proportional share of household income.
+The following Lorenz curve visualizes the cumulative share of households (x) against the cumulative share of total household income (y). The dotted line is what the curve would look like at perfect inequality, where the bottom 50% of households possess 50% of total household income. The solid red line represents the relationship between cumulative household share and cumulative household income share in reality.
+  
 ```{r hh income lorenz, echo=FALSE}
 perfect_equality <- data.frame(x = c(0, 25, 75, 100), y = c(0, 25, 75, 100))
 
@@ -142,15 +140,20 @@ ggplot() +
   theme(legend.position = "bottom")
 ```  
 
+
+We see on this curve that the lowest earning 50% of households in the PSID account for only 18% of total household income, and that the bottom 75% of households account for 42% of income. By contrast, the top 10% of highest earning households account for about a third of all household income, and the top 1% of households account for just above 8%. In this dataset, we can tell that high-earning households account for more than their proportional share of household income, indicating income inequality.   
+
 # ? SCF   
-## Question 3: total household income coefficient of variation  
+
+## Question 3: total household income coefficient of variation   
 To further quantify the level of income inequality in the dataset, we can calculate the coefficient of variation by dividing the standard deviation in household income by the mean household income. This produces a coefficient of variation of 1.15, which is ______ compared to the ______ derived from the SCF. 
 ```{r coefficient of variation hh income, echo=FALSE}
 print(paste("Coefficient of variation of household income:", round(sd(psid$INCOME)/mean(psid$INCOME),2)))
 ```
 
-#? adjustment method  
-## Question 4: adjusted total household income Lorenz curve   
+#? adjustment method   
+
+## Question 4: adjusted total household income Lorenz curve    
 When we adjust this curve for the number of household heads present, the distance from the line of perfect equality decreases. On the yellow curve representing the relationship between adjusted income share and population share, we see that the bottom 50% of households account for 21% of income, compared to the 18% on the non-adjusted curve. 
 
 This indicates that some of the inequality among households may be attributed to differences in household size and the number of earners. 
@@ -173,7 +176,7 @@ ggplot() +
   theme_minimal() +
   scale_color_manual(values = c("gray30", "tomato", "goldenrod1"), name = "") + 
   labs(
-    title = "Lorenz Curve of Household Income",
+    title = "Lorenz Curve of Household Income, adjusted by number of household heads",
     subtitle = "Households and income, PSID",
     x = "Cumulative share of households",
     y = "Cumulative share of total income"

@@ -17,18 +17,7 @@ This dataset has 9066 households and 38 variables, including the household ID.
 ## [1] "rows: 9066"
 ```
 
-```
-##  [1] "ID"               "AGE_HEAD"         "AGE_SPOUSE"       "SEX_HEAD"        
-##  [5] "SEX_SPOUSE"       "EDU_HEAD"         "EDU_SPOUSE"       "OCC_HEAD"        
-##  [9] "OCC_SPOUSE"       "STATE"            "MARITAL"          "HOUSEHOLD_SIZE"  
-## [13] "CHILDREN"         "SPOUSE_PRESENT"   "WEIGHT"           "INCOME"          
-## [17] "HEAD_LABOR"       "SPOUSE_LABOR"     "WEEKS_HEAD"       "WEEKS_SPOUSE"    
-## [21] "WEEKS_OUT_HEAD"   "WEEKS_OUT_SPOUSE" "EXP"              "GAS"             
-## [25] "FOOD_HOME"        "FOOD_DELIV"       "FOOD_OUT"         "RENT"            
-## [29] "EDUC_EXP"         "CHILDCARE"        "TRIPS"            "WEALTH"          
-## [33] "HOUSE_VALUE"      "MORTGAGE"         "MORT_PAY"         "HOME_EQUITY"     
-## [37] "BUSINESS_VAL"     "PROPERTY_TAX"
-```
+_ID_, _AGE_HEAD_, _AGE_SPOUSE_, _SEX_HEAD_, _SEX_SPOUSE_, _EDU_HEAD_, _EDU_SPOUSE_, _OCC_HEAD_, _OCC_SPOUSE_, _STATE_, _MARITAL_, _HOUSEHOLD_SIZE_, _CHILDREN_, _SPOUSE_PRESENT_, _WEIGHT_, _INCOME_, _HEAD_LABOR_, _SPOUSE_LABOR_, _WEEKS_HEAD_, _WEEKS_SPOUSE_, _WEEKS_OUT_HEAD_, _WEEKS_OUT_SPOUSE_, _EXP_, _GAS_, _FOOD_HOME_, _FOOD_DELIV_, _FOOD_OUT_, _RENT_, _EDUC_EXP_, _CHILDCARE_, _TRIPS_, _WEALTH_, _HOUSE_VALUE_, _MORTGAGE_, _MORT_PAY_, _HOME_EQUITY_, _BUSINESS_VAL_ and _PROPERTY_TAX_
 
 ## Question 2: age of household head  
 The average age of the household head is 46.25. The highest age is 102 and the lowest age is 18.
