@@ -12,6 +12,7 @@ library(tidyverse)
 library(ggplot2)
 library(pander)
 library(scales)
+library(stargazer)
 
 psid <- read_csv("data/PSID_CLEAN.csv")
 ```
@@ -102,11 +103,10 @@ summary(psid$INCOME) %>%
   pander(caption = "Distribution of Household Incomes") 
 
 ggplot(psid, aes(x = INCOME/1000)) +
-  geom_histogram(binwidth = 5, fill = "steelblue") +
+  geom_histogram(binwidth = 5, fill = "darkslategray") +
   theme_minimal() +
   labs(
-    title = "Most house",
-    subtitle = "Distribution of households by household income, PSID",
+    title = "Distribution of household incomes, PSID (binwidth = $5,000)",
     x = "Household Income, thousands ($)",
     y = "Households",
     fill = ""
@@ -206,11 +206,12 @@ data.frame(percentile_ratio = c("90-30", "90-50", "30-10", "99-50"),
   pander(caption = "PSID Household Income Percentile Ratios")
 ```
 
-# ? SCF
+# ? SCF  
 - Comparison with SCF 
 
-## Question 6: mean household income and share by quintile  
-The following table further illustrates this pattern of income inequality among PSID households: the greatest disparities between consecutive quintiles are between quintiles 2 and 1 and quintiles 5 and 4. Quintile 2 has a mean income of $33,188, 2.76 times the first quintile's mean income of $12,003. The second quintile's income share of 8.5% is 2.74 times that of the first quintile (3.1%). The fifth quintile's income of $199,894 is 2.21 times that of the fourth quintile ($90,408). The fifth quintile's income share of 51.1% is 2.39 times that of the fourth quintile. It's also notable that the income share of the top quintile is greater than that of the remaining 4 quintiles. Taken together, this shows the high overall income inequality among PSID households, as well as the heightened inequality at the bottom and top of the distributions. 
+## Question 6: mean household income and share by quintile    
+The following table further illustrates this pattern of income inequality among PSID households: the greatest disparities between consecutive quintiles are between quintiles 2 and 1 and quintiles 5 and 4. Quintile 2 has a mean income of $33,188, 2.76 times the first quintile's mean income of $12,003. The second quintile's income share of 8.5% is 2.74 times that of the first quintile (3.1%). The fifth quintile's income of $199,894 is 2.21 times that of the fourth quintile ($90,408). The fifth quintile's income share of 51.1% is 2.39 times that of the fourth quintile. It's also notable that the income share of the top quintile is greater than that of the remaining 4 quintiles. Taken together, this shows the high overall income inequality among PSID households, as well as the heightened inequality at the bottom and top of the distributions.  
+
 
 ```{r income quintiles table, echo=FALSE}
 psid_quintile <- psid %>%
@@ -232,7 +233,7 @@ psid_quintile %>%
   pander(caption="Share of total household income and mean income by quintile")
 ```
 
-```{r income quintile viz, echo=FALSE}
+```{r income quintile viz, echo=FALSE}  
 psid_quintile %>%
   ggplot(aes(x = quintile, y = income_share)) +
   geom_col(fill = "darkslategray") +
@@ -243,11 +244,11 @@ psid_quintile %>%
   theme_minimal()
 
 ```
-# ? SCF
-dollar(mean_income)
+# ? SCF  
 
-## Question 7: mean total household income and share for the top 1%  
-As discussed in class, quintiles can obfuscate the inequality within the top of the distribution. Looking at the top 1% of high earning households, we see that their mean income ($639,974) is 8.81 times that of the bottom 99% ($72,570), and 3.2 times that of the top 20%. In terms of income share, the top 1% accounts for 8% of all household income, making up nearly one-sixth of the top quintile's share. Even within the top quintile, there is drastic inequality between the highest and lowest earners. 
+
+## Question 7: mean total household income and share for the top 1%   
+As discussed in class, quintiles can obfuscate the inequality within the top of the distribution. Looking at the top 1% of high earning households, we see that their mean income ($639,974) is 8.81 times that of the bottom 99% ($72,570), and 3.2 times that of the top 20%. In terms of income share, the top 1% accounts for 8% of all household income, making up nearly one-sixth of the top quintile's share. Even within the top quintile, there is drastic inequality between the highest and lowest earners.  
 ```{r income top 1%, echo=FALSE}
 psid_1pct <- psid %>%
   select(INCOME) %>%
@@ -265,12 +266,13 @@ psid_1pct %>%
   pander(caption="Share of total household income and mean income held by the top 1%")
 ```
 
-#? SCF  
-compare with scf distribution   
+# ? SCF    
+compare with scf distribution    
 
-# Part 3: Labor Income   
-## Question 1: household earnings share and mean by quintile  
-Looking at total labor earnings of households, the inequality within the bottom of the distribution is much higher. The table below lists the mean household earnings and share of household earnings by quintile. The second quintile of households ($14,976) earns 516 times the labor income of the first quintile ($29). The earnings inequality at the top 40% of the distribution is also higher than total household income, but by a smaller margin. 
+# Part 3: Labor Income    
+## Question 1: household earnings share and mean by quintile    
+Looking at total labor earnings of households, the inequality within the bottom of the distribution is much higher. The table below lists the mean household earnings and share of household earnings by quintile. The second quintile of households ($14,976) earns 516 times the labor income of the first quintile ($29). The earnings inequality at the top 40% of the distribution is also higher than total household income, but by a smaller margin.  
+
 ```{r total labor income quintile, echo=FALSE}
 psid$TOTAL_LABOR <- psid$HEAD_LABOR + psid$SPOUSE_LABOR
 
@@ -292,8 +294,8 @@ psid_labor_quintile %>%
          mean_labor_income=dollar(mean_labor_income)) %>%
   pander(caption="Share of total household labor income and mean labor income by quintile")
 ```
-## Question 2: total household income vs household earnings by quintile  
-Side by side, we can see that the distribution of earnings share is more unequal. The bottom quintile's share of earnings rounds to zero, while the bottom quintile's share of total household income is 3.1%. Quintiles 2 and 3 also hold smaller shares of earnings than they do total income. Quintile 4 has a slightly higher share of earnings than total income, and quintile 5's share of earnings is higher than total income by 6.3 percentage points. Compared to the distribution of total income, earnings is more unevenly distributed, with higher percentage shares concentrated in the top 2 quartiles. 
+## Question 2: total household income vs household earnings by quintile    
+Side by side, we can see that the distribution of earnings share is more unequal. The bottom quintile's share of earnings rounds to zero, while the bottom quintile's share of total household income is 3.1%. Quintiles 2 and 3 also hold smaller shares of earnings than they do total income. Quintile 4 has a slightly higher share of earnings than total income, and quintile 5's share of earnings is higher than total income by 6.3 percentage points. Compared to the distribution of total income, earnings is more unevenly distributed, with higher percentage shares concentrated in the top 2 quartiles.   
 ```{r total income vs labor income quintile shares, echo=FALSE}
 psid_quintile %>%
   inner_join(psid_labor_quintile, by="quintile") %>%
@@ -304,7 +306,7 @@ psid_quintile %>%
 
 ```
 
-Calculating the coefficient of variation for both metrics confirms this: earnings have a coefficient of variation of 1.36, compared to 1.15 for household income. This indicates that there is more variability in earnings relative to the mean.  
+Calculating the coefficient of variation for both metrics confirms this: earnings have a coefficient of variation of 1.36, compared to 1.15 for household income. This indicates that there is more variability in earnings relative to the mean.    
 
 ```{r household income and earnings coefficient of variation, echo=FALSE}
 data.frame(metric=c("Household Income", "Household Earnings"),
@@ -313,7 +315,7 @@ data.frame(metric=c("Household Income", "Household Earnings"),
              round(sd(psid$TOTAL_LABOR)/mean(psid$TOTAL_LABOR),2))) %>%
   pander(caption="Coefficient of Variation: Household Income and Earnings")
 ```
-This trend is seen when plotted on a Lorenz curve, as well. The curve representing the relationship between cumulative shares of households and income for household earnings is more far away from the line of perfect inequality, indicating that its distribution is more unequal than that of total household income. As discussed in class, redistributive policies like social insurance and means-tested transfers may be contributing to the household income of households at the bottom of the income distribution who do not have labor income. Consequently, the bottom quintile can have a higher share of total household income than household earnings. 
+This trend is seen when plotted on a Lorenz curve, as well. The curve representing the relationship between cumulative shares of households and income for household earnings is more far away from the line of perfect inequality, indicating that its distribution is more unequal than that of total household income. As discussed in class, redistributive policies like social insurance and means-tested transfers may be contributing to the household income of households at the bottom of the income distribution who do not have labor income. Consequently, the bottom quintile can have a higher share of total household income than household earnings.   
 
 ```{r lorenz, total household income vs earnings, echo=FALSE}
 psid_lorenz_earnings <- psid %>%
@@ -396,8 +398,9 @@ psid_positive$weekly_wage <- psid_positive$HEAD_LABOR/psid_positive$WEEKS_HEAD
 mean(psid_positive$weekly_wage)
 ```
 
-A variance decomposition shows that most earnings inequality arises from wage dispersion: the variance of log wages (0.87) is much larger than the variance of log weeks worked (0.17). The positive covariance (0.15) indicates that individuals with higher wages also tend to work more weeks, which further amplifies overall earnings inequality. This suggests that differences in wages contribute far more to earnings inequality than differences in weeks worked. The caveat with this approach, however, is that we are excluding household heads who did not work or receive labor earnings. This omission may downplay the impact of weeks worked on labor earning inequality, as those at the bottom of the earnings distribution may be working less due to fewer employment opportunities.
+A variance decomposition shows that most earnings inequality arises from wage dispersion: the variance of log wages (0.87) is much larger than the variance of log weeks worked (0.17). The positive covariance (0.15) indicates that individuals with higher wages also tend to work more weeks, further amplifying overall earnings inequality. These results suggest that differences in wages contribute much more to earnings inequality than differences in weeks worked.
 
+However, a caveat to this decomposition is that it is restricted to household heads with positive weeks worked and positive labor earnings. By excluding those who did not work or earn, the approach may understate the role of weeks worked in earnings inequality, as those at the bottom of the earnings distribution could be working very few weeks or not at all due to limited employment opportunities.
 
 ```{r var of log of earnings, echo=FALSE}
 psid_positive_log <- psid_positive %>%
@@ -425,10 +428,20 @@ tibble(
 
 
 ## Question 6 
-- Regression of log wages of household head on age, age^2, education, occupation
-```{r wages regression}
+A linear regression of the log-transformed weekly wage of the household head on the head's age, age-squared, education, and occupation provides further information about the drivers of wage inequality. The observables in this simple regression explain 44% of the variation in log-transformed weekly wages, while the residuals (residual standard error = 0.7243) explain 56%. 
+```{r wages regression, echo=FALSE}
+psid_reg <- psid_positive_log %>%
+  mutate(EDU_HEAD_CAT = as.factor(EDU_HEAD),
+         OCC_HEAD_CAT = as.factor(OCC_HEAD),
+         AGE_HEAD_SQ = AGE_HEAD^2)
+
+reg <- lm(log_wage ~ AGE_HEAD + AGE_HEAD_SQ + EDU_HEAD_CAT + OCC_HEAD_CAT, data = psid_reg)
+summary(reg)
 ```
-- Residuals 
-- Variance of residuals 
-- Share of inequality explained by age, education and occupation?
+```{r compare residuals vs predictors, echo=FALSE}
+var(reg$fitted.values)/var(psid_reg$log_wage)
+var(reg$residuals)/var(psid_reg$log_wage)
+```
+
+
  
