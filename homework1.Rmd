@@ -277,19 +277,21 @@ psid_1pct %>%
 ```
 
 # Part 3: Labor Income    
-# ? Check numbers / code. 
 ## Question 1: household earnings share and mean by quintile     
 We can create a variable for the total labor income by adding the LABOR_HEAD and LABOR_SPOUSE. Looking at total labor earnings of households, the inequality within the bottom of the distribution is much higher. The table below lists the mean household earnings and share of household earnings by quintile. The second quintile of households ($14,976) earns 516 times the labor income of the first quintile ($29). The earnings inequality at the top of the distribution is also higher than household income inequality, but by a smaller margin.  
 
 ```{r total labor income quintile, echo=FALSE}
 psid$TOTAL_LABOR <- psid$HEAD_LABOR + psid$SPOUSE_LABOR
 
+test <- psid %>%
+  mutate(earnings_quintile = ntile(TOTAL_LABOR, 5))
+
 psid_labor_quintile <- psid %>%
   select(TOTAL_LABOR) %>%
-  mutate(quintile = case_when(TOTAL_LABOR <= quantile(psid$TOTAL_LABOR, 0.2) ~ "1",
-                              TOTAL_LABOR <= quantile(psid$TOTAL_LABOR, 0.4) ~ "2",
-                              TOTAL_LABOR <= quantile(psid$TOTAL_LABOR, 0.6) ~ "3",
-                              TOTAL_LABOR <= quantile(psid$TOTAL_LABOR, 0.8) ~ "4",
+  mutate(quintile = case_when(TOTAL_LABOR < quantile(psid$TOTAL_LABOR, 0.2) ~ "1",
+                              TOTAL_LABOR < quantile(psid$TOTAL_LABOR, 0.4) ~ "2",
+                              TOTAL_LABOR < quantile(psid$TOTAL_LABOR, 0.6) ~ "3",
+                              TOTAL_LABOR < quantile(psid$TOTAL_LABOR, 0.8) ~ "4",
                               TRUE ~ "5")) %>%
   group_by(quintile) %>%
   summarize(labor_income_quintile = sum(TOTAL_LABOR),
@@ -327,7 +329,7 @@ data.frame(metric=c("Household Income", "Household Earnings"),
              round(sd(psid$TOTAL_LABOR)/mean(psid$TOTAL_LABOR),2))) %>%
   pander(caption="Coefficient of Variation: Household Income and Earnings")
 ```
-# ? Confirm universe: filtered by spouse present? 
+
 This trend is seen when plotted on a Lorenz curve, as well. The curve representing cumulative households against cumulative earnings is more far away from the line of perfect equality, indicating that its distribution is more unequal than that of household income. As discussed in class, redistributive policies like social insurance and means-tested transfers may be contributing to the household income of households at the bottom of the income distribution who do not have labor income. Consequently, the bottom quintile can have a higher share of total household income than household earnings.   
 
 ```{r lorenz, total household income vs earnings, echo=FALSE}
@@ -410,9 +412,9 @@ psid_positive$weekly_wage <- psid_positive$HEAD_LABOR/psid_positive$WEEKS_HEAD
 mean(psid_positive$weekly_wage)
 ```
 
-A variance decomposition shows that most earnings inequality arises from wage dispersion: the variance of log wages (0.87) is much larger than the variance of log weeks worked (0.17). The positive covariance (0.15) indicates that individuals with higher wages also tend to work more weeks, further amplifying overall earnings inequality. These results suggest that differences in wages contribute much more to earnings inequality than differences in weeks worked.
+A variance decomposition shows that most earnings inequality arises from wage dispersion: the variance of log wages (0.87) is much larger than the variance of log weeks worked (0.17). These results suggest that differences in wages contribute much more to earnings inequality than differences in weeks worked.
 
-However, a caveat to this decomposition is that it is restricted to household heads with positive weeks worked and positive labor earnings. By excluding those who did not work or earn, the approach may understate the role of weeks worked in earnings inequality, as those at the bottom of the earnings distribution could be working very few weeks or not at all due to limited employment opportunities.
+However, a caveat to this decomposition is that it is restricted to household heads with positive weeks worked and positive labor earnings. By excluding those who did not work or earn, the approach may understate the role of weeks worked in earnings inequality, as those at the bottom of the earnings distribution could be working very few weeks or not at all due to limited employment opportunities. We are also assuming no covariance between weeks worked and hourly pay. 
 
 ```{r var of log of earnings, echo=FALSE}
 psid_positive_log <- psid_positive %>%
@@ -426,21 +428,16 @@ var_log_earnings <- var(psid_positive_log$log_earnings, na.rm = TRUE)
 var_log_wage <- var(psid_positive_log$log_wage, na.rm = TRUE)
 var_log_weeks <- var(psid_positive_log$log_weeks, na.rm = TRUE)
 
-cov_log <- cov(psid_positive_log$log_wage, psid_positive_log$log_weeks, use = "complete.obs")
-
-var_log_earnings_predicted <- var_log_wage + var_log_weeks + 2 * cov_log
-
-
 tibble(
-  component = c("Var(log wage)", "Var(log weeks)", "2*Cov(log wage, log weeks)", "Var(log earnings)", "Predicted Var(log earnings)"),
-  value = c(var_log_wage, var_log_weeks, 2 * cov_log, var_log_earnings, var_log_earnings_predicted)
+  component = c("Var(log wage)", "Var(log weeks)","Var(log earnings)"),
+  value = c(var_log_wage, var_log_weeks, var_log_earnings)
 )
 ```
 
 
 
 ## Question 6 
-A linear regression of the log-transformed weekly wage of the household head on the head's age, age-squared, education, and occupation provides further information about the drivers of wage inequality. The observables in this simple regression explain 44% of the variation in log-transformed weekly wages, while the residuals (residual standard error = 0.7243) explain 56%. 
+A linear regression of the log-transformed weekly wage of the household head on the head's age, age-squared, education, and occupation provides further information about the drivers of wage inequality. The observables in this regression explain 44% of the variation in log-transformed weekly wages, while the residuals (residual standard error = 0.7243) explain 56%. 
 ```{r wages regression, echo=FALSE}
 psid_reg <- psid_positive_log %>%
   mutate(EDU_HEAD_CAT = as.factor(EDU_HEAD),
@@ -448,11 +445,11 @@ psid_reg <- psid_positive_log %>%
          AGE_HEAD_SQ = AGE_HEAD^2)
 
 reg <- lm(log_wage ~ AGE_HEAD + AGE_HEAD_SQ + EDU_HEAD_CAT + OCC_HEAD_CAT, data = psid_reg)
-summary(reg)
 ```
+
 ```{r compare residuals vs predictors, echo=FALSE}
-var(reg$fitted.values)/var(psid_reg$log_wage)
-var(reg$residuals)/var(psid_reg$log_wage)
+print(paste("Share of inequality explained by observables:", round(var(reg$fitted.values)/var(psid_reg$log_wage),2)))
+print(paste("Share of inequality explained by residuals:", round(var(reg$residuals)/var(psid_reg$log_wage),2)))
 ```
 
 
