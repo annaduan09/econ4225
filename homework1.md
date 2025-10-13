@@ -14,10 +14,12 @@ author: "Anna Duan"
 This dataset has 9066 households and 38 variables, including the household ID.
 
 ```
-## [1] "rows: 9066"
+## [1] "PSID row count: 9066"
 ```
 
-_ID_, _AGE_HEAD_, _AGE_SPOUSE_, _SEX_HEAD_, _SEX_SPOUSE_, _EDU_HEAD_, _EDU_SPOUSE_, _OCC_HEAD_, _OCC_SPOUSE_, _STATE_, _MARITAL_, _HOUSEHOLD_SIZE_, _CHILDREN_, _SPOUSE_PRESENT_, _WEIGHT_, _INCOME_, _HEAD_LABOR_, _SPOUSE_LABOR_, _WEEKS_HEAD_, _WEEKS_SPOUSE_, _WEEKS_OUT_HEAD_, _WEEKS_OUT_SPOUSE_, _EXP_, _GAS_, _FOOD_HOME_, _FOOD_DELIV_, _FOOD_OUT_, _RENT_, _EDUC_EXP_, _CHILDCARE_, _TRIPS_, _WEALTH_, _HOUSE_VALUE_, _MORTGAGE_, _MORT_PAY_, _HOME_EQUITY_, _BUSINESS_VAL_ and _PROPERTY_TAX_
+```
+## [1] "PSID variable count: 38"
+```
 
 ## Question 2: age of household head  
 The average age of the household head is 46.25. The highest age is 102 and the lowest age is 18.
@@ -35,14 +37,16 @@ The average age of the household head is 46.25. The highest age is 102 and the l
 ```
 
 ## Question 3: average household income  
-The average household income is $78,265.69. This is substantially lower the $142k reported by the SCF in 2022 (Section 1.2, slide 9). One possible reason for this difference is that the SCF surveys a small sample, focusing on high-income individuals, resulting in a less representative mean. The PSID has a larger sample, with less emphasis on the top of the income distribution.
+The average household income is $78,265.69. This is lower than the $142,000 reported by the SCF (based on class slides for Section 1.2, slide 9). One possible reason for this difference is that the SCF intentionally oversamples wealthy households to collect information about the income and wealth patterns at the top of the income distribution. In addition to SCF's intentional focus on a high-income subset of the population, other differences that may create differences in the mean household income collected include SCF's smaller sample size (6k, compared to PSID's 10k) and lower frequency. 
+
+SCF also surveys a smaller (6k) group compared to PSID (10k). 
 
 ```
 ## [1] "Mean household income: 78265.69"
 ```
 
 ## Question 4: income range   
-The household incomes in the dataset have a wide range: the lowest is -$267,900 and the highest is $2,125,100. The households with negative values likely incurred business or other losses in the survey year, resulting in negative net income.
+The household incomes in the dataset have a wide range: the lowest is -$267,900 and the highest is $2,125,100. According to the codebook, the households with negative incomes likely incurred business or farm losses. This may include losses from business investments, farming, or other financial decisions. 
 
 ```
 ## [1] "Lowest household income: -267900"
@@ -53,14 +57,15 @@ The household incomes in the dataset have a wide range: the lowest is -$267,900 
 ```
 
 ## Question 5: age of household head's spouse     
-Of the 4,523 households with a spouse of the household head present, the average age of the spouse is 45.64 years.
+Of the 4,523 households with a spouse present, the average age of the spouse is 45.64 years.
 
 ```
 ## [1] "Mean spouse age: 45.64"
 ```
 
 ## Question 6: household size    
-Households with only 1 member make up 28.45% of the data. Households with 5 or more members make up 11.29%. Compared to the histogram shown in class, the PSID has fewer 2-member households and more 3-5 member households. In both datasets, about 28% of households have one member. The PSID dataset has a smaller share of two-member households: only 30.43% compared to the nearly 35% shown on slide 2 [what dataset is this?]. PSID has a slightly larger share of households with 3 members: 15.95%, compared to the slide's 15%; a 13.88% share of 4-member households, compared to the slide's 12.5%; and a 7.2% share of 5-member households, compared to just past 5% in the slide. 
+The average household in the dataset has 2.6 members. Households with only 1 member make up 28.45% of the data. Households with 5 or more members make up 11.29%.   
+
 
 ----------------------------
  size_group   count    pct  
@@ -74,13 +79,14 @@ Households with only 1 member make up 28.45% of the data. Households with 5 or m
 
 Table: Percentage share of PSID households by size
 
-
+  
+The histogram below shows the distribution of households by member count in the PSID dataset. Compared to the SCF histogram shown in class, the PSID histogram has fewer 2-member households and more 3-5 member households. The PSID dataset has 30.43% two-member households compared to the nearly 35% shown on Slide 2 of Section 1.1. PSID has a slightly larger share of households with 3 members: 15.95%, compared to the slide's 15%; a 13.88% share of 4-member households, compared to the slide's 12.5%; and a 7.2% share of 5-member households, compared to just past 5% in the slide.   
 
 ![](homework1_files/figure-latex/hh size hist-1.pdf)<!-- --> 
 
 # Part 2: Income Distribution    
 ## Question 1: distribution of household income  
-The following histogram shows the distribution of household incomes in the PSID, with values above the 99th percentile removed. The distribution is right-skewed, as the median of $55,090 is lower than the mean of $78,266. The majority of households earn less than $100,682, which is the 75th percentile. A small minority of households surveyed have higher household incomes, up to $2.13 million. 137 households have no income, and three households have negative income, with the lowest income being $267,900.
+The following histogram shows the distribution of household incomes in the PSID, with outliers exceeding the 99th percentile ($396,420). The distribution is right-skewed, as the median of $55,090 is lower than the mean of $78,266. The majority of households earn less than $100,682, which is the 75th percentile. 25% of households surveyed have higher household incomes, up to $2.125 million. 137 households have no income, and three households have negative income, with the lowest income being -$267,900.
 
 
 --------------------------------------------------------
@@ -94,45 +100,49 @@ Table: Distribution of Household Incomes
 ![](homework1_files/figure-latex/hh income hist-1.pdf)<!-- --> 
 
 ## Question 2: household income Lorenz curve   
-The following Lorenz curve visualizes the cumulative share of households (x) against the cumulative share of total household income (y). The dotted line is what the curve would look like at perfect inequality, where 50% of households possess 50% of total household income. The solid red line represents the relationship between cumulative household share and cumulative household income share. 
-
-We see on this curve that the lowest earning 50% of households in the PSID account for only 18% of total household income, and that the bottom 75% of households account for 42% of income. By contrast, the top 10% of highest earning households account for about a third of all household income, and the top 1% of households account for just above 8%. In this dataset, we can tell that higher-earning households account for more than their proportional share of household income.
+The following Lorenz curve visualizes the cumulative share of households (x) against the cumulative share of income (y). The dotted line is what the curve would look like at perfect equality, where the bottom 50% of households possess 50% of total household income. The solid red line represents the relationship between cumulative household share and cumulative income share in reality.
+  
 ![](homework1_files/figure-latex/hh income lorenz-1.pdf)<!-- --> 
 
-# ? SCF   
-## Question 3: total household income coefficient of variation  
-To further quantify the level of income inequality in the dataset, we can calculate the coefficient of variation by dividing the standard deviation in household income by the mean household income. This produces a coefficient of variation of 1.15, which is ______ compared to the ______ derived from the SCF. 
+
+We see on this curve that the lowest earning 50% of households in the PSID account for only 18% of total household income, and that the bottom 75% of households account for 42% of income. By contrast, the top 10% of highest earning households account for about a third of all household income, and the top 1% of households make around 8%. In this dataset, we can tell that high-earning households account for more than their proportional share of household income, indicating income inequality within the sample.      
+
+
+## Question 3: total household income coefficient of variation   
+To further quantify the level of income inequality in the dataset, we can calculate the coefficient of variation by dividing the standard deviation in household income by the mean household income. This produces a coefficient of variation of 1.15, which is lower compared to the SCF. Based on slide 14 of Section 1.2 in the lecture slides, the coefficient of variation derived from the SCF was 4.61 in 1989, 4.83 in 2019, and 5.31 in 2022. This tells us that there is less income inequality in the PSID sample than in the SCF samples. 
 
 ```
-## [1] "Coefficient of variation of household income: 1.15"
+## [1] "Coefficient of variation of household income: 1.152"
 ```
 
-#? adjustment method  
-## Question 4: adjusted total household income Lorenz curve   
-When we adjust this curve for the number of household heads present, the distance from the line of perfect equality decreases. On the yellow curve representing the relationship between adjusted income share and population share, we see that the bottom 50% of households account for 21% of income, compared to the 18% on the non-adjusted curve. 
 
-This indicates that some of the inequality among households may be attributed to differences in household size and the number of earners. 
+## Question 4: adjusted total household income Lorenz curve    
+When we adjust household income based on the number of household heads present, our Lorenz curve moves closer to the line of perfect equality, meaning that adjusting household income by the number of household heads decreases income inequality. This is intuitive: we are now adjusting for the number of potential earners in a household, allowing for a more fair comparison between households with one and two heads.  
+
+On the yellow curve representing the relationship between adjusted income share and household share, we see that the bottom 50% of households account for 21% of income, compared to the 18% on the non-adjusted curve. This indicates that some of the inequality among households may be attributed to differences in household size and the number of earners. 
 
 ![](homework1_files/figure-latex/lorenz curve comparison-1.pdf)<!-- --> 
 
 ## Question 5: household income percentile ratios   
-The table below displays the 30th, 50th, 90th, and 99th percentiles of household income in the dataset. The wide gap between the 50th and 90th and 50th and 99th percentiles give us a sense of the income inequality among the households, but percentiles themselves are insufficient. 
+The table below displays the 30th, 50th, 90th, and 99th percentiles of household income in the dataset. Based on these percentile, we know that 30% of the sampled households earn $33,107.50 or less per year; 50% earn $55,090 or less; 90% earn $161,188 or less; and 99% earn $396,420 or less. The wide gap between the 50th and the 90th percentile is a clear marker of income inequality. 
 
------------------------
- percentile    value   
------------- ----------
-    30th      $33107.5 
+-------------------------
+ percentile     value    
+------------ ------------
+    30th      $33,107.50 
 
-    50th       $55090  
+    50th      $55,090.00 
 
-    90th      $161188  
+    90th       $161,188  
 
-    99th      $396420  
------------------------
+    99th       $396,420  
+-------------------------
 
 Table: PSID Household Income Percentiles
   
-The percentile ratios in the table reveal a markedly unequal income distribution. Households at the top earn several times more than those in the middle or bottom. Specifically, households at the 90th percentile earn nearly three times the median income, while those at the 99th percentile earn 7.2 times the median, indicating extreme concentration of income at the very top. The 2.67 ratio between the 30th and 10th percentiles shows that inequality at the lower end exists but is considerably smaller than that among top earners.  
+The percentile ratios in the table further illustrate a highly unequal income distribution, where households at the top earn several times more than those in the middle or bottom. The 90-30 ratio is 4.87, meaning households at the top earn 4.87 times what households at the bottom earn. The 90-50 ratio is 2.93, meaning households at the top earn 2.93 times what households in the middle earn. The 30-10 ratio is 2.67, meaning there is income inequality within the bottom as well, with those at the 30th percentile earning 2.67 times what those at the 10th percentile earn. The 99-50 ratio is 7.2, meaning that households at the very top of the distribution earn 7.2 times what households in the middle earn, indicating extreme concentration of income at the very top. 
+
+The numbers in the SCF are even more drastic: in 2022, the 90-50 ratio was 3.54 and the 99-50 ratio was 17.05. This may be due to SCF's sampling again: by over-sampling the ultra-wealthy, the SCF likely captures much higher incomes in the upper end of its distribution than the PSID does. 
 
 
 --------------------------
@@ -149,12 +159,11 @@ The percentile ratios in the table reveal a markedly unequal income distribution
 
 Table: PSID Household Income Percentile Ratios
 
-# ? SCF  
-- Comparison with SCF 
 
 ## Question 6: mean household income and share by quintile    
-The following table further illustrates this pattern of income inequality among PSID households: the greatest disparities between consecutive quintiles are between quintiles 2 and 1 and quintiles 5 and 4. Quintile 2 has a mean income of $33,188, 2.76 times the first quintile's mean income of $12,003. The second quintile's income share of 8.5% is 2.74 times that of the first quintile (3.1%). The fifth quintile's income of $199,894 is 2.21 times that of the fourth quintile ($90,408). The fifth quintile's income share of 51.1% is 2.39 times that of the fourth quintile. It's also notable that the income share of the top quintile is greater than that of the remaining 4 quintiles. Taken together, this shows the high overall income inequality among PSID households, as well as the heightened inequality at the bottom and top of the distributions.  
+The following table further illustrates the income inequality among PSID households: the highest disparities between consecutive quintiles are between quintiles 1 and 2 and quintiles 4 and 5. Quintile 2 has a mean income of $33,188, 2.76 times the first quintile's mean income of $12,003. The second quintile's income share of 8.5% is 2.74 times that of the first quintile (3.1%). The fifth quintile's income of $199,894 is 2.21 times that of the fourth quintile ($90,408). The fifth quintile's income share of 51.1% is 2.21 times that of the fourth quintile. It's also notable that the income share of the top quintile is greater than that of the 4 lower quintiles combined. Taken together, this shows the high overall income inequality among PSID households, as well as the heightened inequality at the two ends of the distribution. 
 
+Compared to SCF (Section 1.2, slide 9), the average income is lower for all quintiles in the PSID. The first four quintiles have a higher income share in the PSID, while the fifth quintile has a higher income share in the SCF. This pattern once again speaks to the difference in sampling across the two surveys. 
 
 
 ---------------------------------------
@@ -174,11 +183,12 @@ The following table further illustrates this pattern of income inequality among 
 Table: Share of total household income and mean income by quintile
 
 ![](homework1_files/figure-latex/income quintile viz-1.pdf)<!-- --> 
-# ? SCF  
 
 
 ## Question 7: mean total household income and share for the top 1%   
-As discussed in class, quintiles can obfuscate the inequality within the top of the distribution. Looking at the top 1% of high earning households, we see that their mean income ($639,974) is 8.81 times that of the bottom 99% ($72,570), and 3.2 times that of the top 20%. In terms of income share, the top 1% accounts for 8% of all household income, making up nearly one-sixth of the top quintile's share. Even within the top quintile, there is drastic inequality between the highest and lowest earners.  
+As discussed in class, looking at mean incomes and income shares by quintiles can obscure the inequality within the top of the distribution. Looking at the top 1% of households, we see that their mean income ($639,974) is 8.81 times that of the bottom 99% ($72,570), and 3.2 times that of the top quintile ($199,894). In terms of income share, the top 1% accounts for 8% of all household income, making up nearly one-sixth of the top quintile's share. Even within the top quintile, there is drastic inequality between the highest and lowest earners.   
+
+Compared to the SCF (based on Section 1.2 Slide 9), the top 1% has a lower income share and mean income in the PSID (SCF reported 22.4% and $3.18 million in 2022).
 
 -----------------------------------------
    group      income_share   mean_income 
@@ -189,9 +199,6 @@ As discussed in class, quintiles can obfuscate the inequality within the top of 
 -----------------------------------------
 
 Table: Share of total household income and mean income held by the top 1%
-
-# ? SCF    
-compare with scf distribution    
 
 # Part 3: Labor Income    
 ## Question 1: household earnings share and mean by quintile    
