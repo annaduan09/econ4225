@@ -4,7 +4,7 @@ output:
   pdf_document:
     number_sections: no
     keep_md: yes
-date: "2025-10-06"
+date: "10-14-2025"
 author: "Anna Duan"
 ---
 
@@ -124,7 +124,7 @@ On the yellow curve representing the relationship between adjusted income share 
 ![](homework1_files/figure-latex/lorenz curve comparison-1.pdf)<!-- --> 
 
 ## Question 5: household income percentile ratios   
-The table below displays the 30th, 50th, 90th, and 99th percentiles of household income in the dataset. Based on these percentile, we know that 30% of the sampled households earn $33,107.50 or less per year; 50% earn $55,090 or less; 90% earn $161,188 or less; and 99% earn $396,420 or less. The wide gap between the 50th and the 90th percentile is a clear marker of income inequality. 
+The table below displays the 30th, 50th, 90th, and 99th percentiles of household income in the dataset. Based on these percentiles, we know that 30% of the sampled households earn $33,107.50 or less per year; 50% earn $55,090 or less; 90% earn $161,188 or less; and 99% earn $396,420 or less. The wide gap between the 50th and the 90th percentile is a clear marker of income inequality. 
 
 -------------------------
  percentile     value    
@@ -185,7 +185,7 @@ Table: Share of total household income and mean income by quintile
 ![](homework1_files/figure-latex/income quintile viz-1.pdf)<!-- --> 
 
 
-## Question 7: mean total household income and share for the top 1%   
+## Question 7: mean household income and share for the top 1%   
 As discussed in class, looking at mean incomes and income shares by quintiles can obscure the inequality within the top of the distribution. Looking at the top 1% of households, we see that their mean income ($639,974) is 8.81 times that of the bottom 99% ($72,570), and 3.2 times that of the top quintile ($199,894). In terms of income share, the top 1% accounts for 8% of all household income, making up nearly one-sixth of the top quintile's share. Even within the top quintile, there is drastic inequality between the highest and lowest earners.   
 
 Compared to the SCF (based on Section 1.2 Slide 9), the top 1% has a lower income share and mean income in the PSID (SCF reported 22.4% and $3.18 million in 2022).
@@ -219,7 +219,7 @@ We can create a variable for the total labor income by adding the LABOR_HEAD and
     5             57.4%              $170,314      
 ---------------------------------------------------
 
-Table: Share of total household labor income and mean labor income by quintile
+Table: Share of labor income and mean labor income by quintile
 
 
 ## Question 2: total household income vs household earnings by quintile    
@@ -271,7 +271,7 @@ The average share of earnings in household income is 68.51%, indicating that hou
 ## Question 4: mean and share of labor earnings by quintile    
 In the dataset, higher income households derive a larger share of their income from labor earnings. The most stark difference is between quintile 1 and 2: the mean share of labor is 46.6% in the former, and increases by 18.9 percentage points in quintile 2. The difference in the earnings share between the remaining quintiles is modest: between quintile 2 and 5, the total increase is less than that between quintile 1 and 2. 
 
-Compared to the SCF (based on Section 1.2, Slide 11), 
+  
 
 -----------------------------
  quintile   mean_labor_share 
@@ -333,11 +333,11 @@ However, a caveat to this decomposition is that it assumes a covariance of zero 
     Var(log earnings)        1.19   
 ------------------------------------
 
-Table: Weekly wages log decomposition results
+Table: Labor earnings variance decomposition results
 
 
 
-## Question 6: regression of log-weekly wages   
+## Question 6: regression: log-weekly wages   
 A linear regression of the log-transformed wage of the household head on the head's age, age-squared, education, and occupation provides further information about the drivers of wage inequality. The observables in this regression explain 44% of the variation in log-transformed wages, while the residuals (residual standard error = 0.7243, variance = 0.4883) explain 56%. 
 
 ```
