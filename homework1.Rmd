@@ -368,8 +368,7 @@ print(paste("Mean share of earnings in total household income:", round(100*mean(
 ## Question 4: mean and share of labor earnings by quintile    
 In the dataset, higher income households derive a larger share of their income from labor earnings. The most stark difference is between quintile 1 and 2: the mean share of labor is 46.6% in the former, and increases by 18.9 percentage points in quintile 2. The difference in the earnings share between the remaining quintiles is modest: between quintile 2 and 5, the total increase is less than that between quintile 1 and 2. 
 
-# ? SCF.   
-Compared to SCF, _____--
+Compared to the SCF (based on Section 1.2, Slide 11), 
 ```{r share of labor by quintile, echo=FALSE}
 psid %>%
   mutate(quintile = case_when(INCOME <= quantile(psid$INCOME, 0.2) ~ "1",
@@ -384,9 +383,9 @@ psid %>%
   pander(caption="Share of total household income from labor earnings by quintile, PSID")
 ``` 
 
+When we separate the top 1% of households, we see that they get 77.1% of their income from labor earnings, higher than the overall mean. 
 
-
-When we pull out the top 1% of households, however, we see that they get 77.1% of their income from labor earnings, higher than the overall mean. This is unexpected, as we discussed in class that the top earning households earn a higher share of capital income, and rely less on labor. Compared to SCF, this figure ________.  
+These shares are all higher than SCF (according to Section 1.2, Slide 11). The subset with the most dramatic different between PSID and SCF is the top 1%: in 2022, the SCF reported that 34.5% of household income in the top 1% came from labor, less than half of the PSID's estimate. The reason for this difference may be that SCF's wealthier sample relies more heavily on capital income, while PSID's sample captures a more representative breakdown of income sources. 
 ```{r share of labor earnings top 1%, echo=FALSE}
 psid %>%
   mutate(group = case_when(INCOME > quantile(psid$INCOME, 0.99) ~ "top 1%",
@@ -412,9 +411,9 @@ psid_positive$weekly_wage <- psid_positive$HEAD_LABOR/psid_positive$WEEKS_HEAD
 mean(psid_positive$weekly_wage)
 ```
 
-A variance decomposition shows that most earnings inequality arises from wage dispersion: the variance of log wages (0.87) is much larger than the variance of log weeks worked (0.17). These results suggest that differences in wages contribute much more to earnings inequality than differences in weeks worked.
+A variance decomposition shows that most earnings inequality arises from wage dispersion: the variance of log wages (0.87) is much larger than the variance of log weeks worked (0.17). The positive covariance (0.15) indicates that individuals with higher wages also tend to work more weeks, further amplifying overall earnings inequality. These results suggest that differences in wages contribute much more to earnings inequality than differences in weeks worked.
 
-However, a caveat to this decomposition is that it is restricted to household heads with positive weeks worked and positive labor earnings. By excluding those who did not work or earn, the approach may understate the role of weeks worked in earnings inequality, as those at the bottom of the earnings distribution could be working very few weeks or not at all due to limited employment opportunities. We are also assuming no covariance between weeks worked and hourly pay. 
+However, a caveat to this decomposition is that it assumes a covariance of zero when this is not the case. We cannot fully separate out the link between earnings and pay vs weekly wages. Additionally, this analysis is restricted to household heads with positive weeks worked and positive labor earnings. By excluding those who did not work or earn, the approach may understate the role of weeks worked in earnings inequality, as those at the bottom of the earnings distribution could be working very few weeks or not at all due to limited employment opportunities. 
 
 ```{r var of log of earnings, echo=FALSE}
 psid_positive_log <- psid_positive %>%
@@ -429,9 +428,10 @@ var_log_wage <- var(psid_positive_log$log_wage, na.rm = TRUE)
 var_log_weeks <- var(psid_positive_log$log_weeks, na.rm = TRUE)
 
 tibble(
-  component = c("Var(log wage)", "Var(log weeks)","Var(log earnings)"),
-  value = c(var_log_wage, var_log_weeks, var_log_earnings)
-)
+component = c("Var(log wage)", "Var(log weeks)", "2*Cov(log wage, log weeks)", "Var(log earnings)"),
+  value = c(var_log_wage, var_log_weeks, 2 * cov_log, var_log_earnings)
+) %>%
+  pander("Weekly wages log decomposition results") 
 ```
 
 

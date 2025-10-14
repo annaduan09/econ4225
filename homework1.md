@@ -317,19 +317,25 @@ In the dataset, there are 6,971 households where the household head has positive
 ## [1] 1117.736
 ```
 
-A variance decomposition shows that most earnings inequality arises from wage dispersion: the variance of log wages (0.87) is much larger than the variance of log weeks worked (0.17). These results suggest that differences in wages contribute much more to earnings inequality than differences in weeks worked.
+A variance decomposition shows that most earnings inequality arises from wage dispersion: the variance of log wages (0.87) is much larger than the variance of log weeks worked (0.17). The positive covariance (0.15) indicates that individuals with higher wages also tend to work more weeks, further amplifying overall earnings inequality. These results suggest that differences in wages contribute much more to earnings inequality than differences in weeks worked.
 
-However, a caveat to this decomposition is that it is restricted to household heads with positive weeks worked and positive labor earnings. By excluding those who did not work or earn, the approach may understate the role of weeks worked in earnings inequality, as those at the bottom of the earnings distribution could be working very few weeks or not at all due to limited employment opportunities. We are also assuming no covariance between weeks worked and hourly pay. 
+However, a caveat to this decomposition is that it is restricted to household heads with positive weeks worked and positive labor earnings. By excluding those who did not work or earn, the approach may understate the role of weeks worked in earnings inequality, as those at the bottom of the earnings distribution could be working very few weeks or not at all due to limited employment opportunities. 
 
 
 ```
-## # A tibble: 3 x 2
-##   component         value
-##   <chr>             <dbl>
-## 1 Var(log wage)     0.874
-## 2 Var(log weeks)    0.167
-## 3 Var(log earnings) 1.19
+## Error: object 'cov_log' not found
 ```
+
+Error:
+! object 'cov_log' not found
+Backtrace:
+ 1. ... %>% pander("Weekly wages log decomposition results")
+ 3. tibble::tibble(...)
+ 4. tibble:::tibble_quos(xs, .rows, .name_repair)
+ 5. rlang::eval_tidy(xs[[j]], mask)
+Warning message:
+In grid.Call.graphics(C_text, as.graphicsAnnot(x$label), x$x, x$y,  :
+  for '2–4' in 'mbcsToSbcs': - substituted for – (U+2013)
 
 
 
