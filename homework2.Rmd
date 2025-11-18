@@ -4,7 +4,7 @@ output:
   pdf_document:
     number_sections: no
     keep_md: yes
-date: "11-11-2025"
+date: "11-18-2025"
 author: "Anna Duan"
 ---
 ```{r setup, echo=FALSE, message=FALSE, include=FALSE, warning=FALSE}
@@ -19,10 +19,11 @@ psid <- read_csv("data/PSID_CLEAN.csv")
 
 # Part 1: Wealth Distribution  
 ## Question 1: Wealth histogram   
-The distribution of household wealth in the psid is right-skewed, with a higher mean than median. This means that a small number of extremely high-wealth households at the top of the distribution are pushing up the mean household wealth figure. Most households have less than $180,000 in wealth, which is the 75th percentile. Some households (1497) have negative wealth, indicating higher liabilities than assets. The following histogram visualizes this distribution, omitting outliers outside of the 1st to 99th percentile.  
+The distribution of household wealth in the PSID is right-skewed, with a higher mean than median. This means that a small number of extremely high-wealth households at the top of the distribution are pushing up the mean household wealth figure. Most households have less than $180,000 in wealth, which is the 75th percentile. Some households (1497) have negative wealth, indicating higher liabilities than assets. The following histogram visualizes this distribution, omitting outliers outside of the 1st to 99th percentile.    
   
   
-```{r hh wealth hist, echo=FALSE}
+  
+```{r hh wealth hist, echo=FALSE, fig.height=4, fig.width=6}
 psid_filtered <- psid %>% 
   filter(
     WEALTH >= quantile(WEALTH, 0.01, na.rm = TRUE),
@@ -34,7 +35,7 @@ ggplot(psid_filtered, aes(x = WEALTH/1000)) +
   labs(
     title = "Distribution of Household Wealth, PSID",
     subtitle = "Outliers outside of 1st-99th percentile omitted",
-    x = "Household Net Worth (Thousands of $)",
+    x = "Household Wealth (Thousands of $)",
     y = "Number of Households"
   ) +
   scale_x_continuous(labels = scales::dollar_format(prefix = "$", suffix = "k")) +
@@ -46,7 +47,7 @@ ggplot(psid_filtered, aes(x = WEALTH/1000)) +
 In the PSID, the bottom 50% of households hold -2.3% of total wealth; the bottom 75% hold 6.3%; the top 10% hold 74.5%; and the top 1% hold 29.2%. The diagonal gray line indicates perfect equality, where 50% of households would collectively hold 50% of wealth. Compared to this line, we see that lower wealth households do not hold a proportional amount of wealth, indicating severe wealth inequality.  
   
    
-```{r lorenz curve: wealth, echo=FALSE}
+```{r Lorenz curve: wealth, echo=FALSE, fig.height=4, fig.width=6}
 psid_lorenz_wealth <- psid %>%
   filter(!is.na(WEALTH)) %>%                 
   arrange(WEALTH) %>%
@@ -61,12 +62,12 @@ ggplot(psid_lorenz_wealth) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "gray") +
   xlab("Cumulative share of households (rank)") +
   ylab("Cumulative share of household wealth") +
-  labs(title = "Lorenz Curve of Household Wealth, PSID") + 
+  labs(title = "Lorenz curve of Household Wealth, PSID") + 
   theme_minimal()
 ```
 
 ## Question 3: Coefficient of variation   
-The coefficient of variation for wealth in the psid is 4.65. It is 7.52 in the SCF for 2019 and 7.63 for 2022. By this measure, inequality is lower in the PSID than in the SCF. This is likely because SCF over-samples the wealthiest households, and because the coefficient of variation is most sensitive to changes in the upper tail of the distribution.     
+The coefficient of variation for wealth in the PSID is 4.65. It is 7.52 in the SCF for 2019 and 7.63 for 2022. By this measure, inequality is lower in the PSID than in the SCF. This is likely because SCF over-samples the wealthiest households, and because the coefficient of variation is most sensitive to changes in the upper tail of the distribution.     
   
   
 ```{r coefficient of variation, echo=FALSE}
@@ -113,8 +114,8 @@ wealth_percentiles %>%
 
 The 99:50 ratio in the SCF was 91.31 in 2019 and 70.66 in 2022. As both of these are lower than the PSID's 109.5 figure, this indicates more inequality between the absolute top of the distribution and the middle class in the PSID. The SCF's 90:50 ratio was 9.98 in 2019 and 10.05 in 2022. The 90:50 ratio in the PSID (19.2) is greater, suggesting greater inequality between the top and the middle as well in the PSID. These differences may be attributed to differences and uncertainties in sampling. across the two surveys.  
 
-## Question 5: Share of wealth and average wealth by quintile    
-The first quintile holds –3.4% of total wealth, while the second quintile accounts for 0.3%. The third quintile’s share is 2.6%, and the fourth has 10.9%. The top quintile holds 89.6%. As in the SCF, the lowest quintile’s share is negative, and the distribution climbs sharply moving up the distribution, highlighting high inequality.
+## Question 5: Share of wealth and average wealth by wealth quintile    
+The first wealth quintile holds –3.4% of total wealth, while the second quintile accounts for 0.3%. The third quintile’s share is 2.6%, and the fourth has 10.9%. The top quintile holds 89.6%. As in the SCF, the lowest quintile’s share is negative, and the distribution climbs sharply moving up the distribution, highlighting high inequality.
 
 Average wealth also increases dramatically across groups. Households in the first quintile have mean wealth of –$52,537, those in the second average $3,021, and those in the third hold $33,883. The fourth quintile averages $140,330, and the top quintile reaches $1,150,896. These figures again reveal a steep escalation in typical wealth moving up the quintiles.  
   
@@ -200,7 +201,9 @@ tibble(
   
   
 ## Question 7: Home equity and business value shares by quintile   
-The average portfolio shares of home equity and business across the wealth quintiles are displayed in the following table. Home equity share is negative for the first quintile, indicating debt, and peaks in the third and fourth quintiles before declining again in the top quintile. Business share is also negative in the first quintile, but increases with wealth. These patterns indicate that lower and medium-wealth households rely more heavily on housing as a component of their net worth, with home equity forming the majority of wealth for the fourth quintile and remaining most important for the middle of the distribution. In contrast, the wealthiest households allocate a larger share of their portfolios to business assets, with a dramatic increase between quintiles 4 and 5.  
+The average portfolio shares of home equity and business across the wealth quintiles are displayed in the following table. Home equity share is negative for the first quintile, indicating debt, and peaks in the third and fourth quintiles before declining again in the top quintile. Business share is also negative in the first quintile, but increases with wealth, with the exception of a dip in quintile 4.   
+
+These patterns indicate that medium-wealth households rely more heavily on housing as a component of their net worth, with home equity forming the majority of wealth for the fourth quintile and remaining most important for the middle of the distribution. In contrast, the wealthiest households allocate a larger share of their portfolios to business assets, with a dramatic increase between quintiles 4 and 5.  
   
   
 ```{r home equity and business as share of wealth by quintiles, echo=FALSE}
@@ -226,14 +229,15 @@ psid_home_eq_business %>%
 
 
 ## Question 8: Household wealth and portfolio composition by age  
-The average wealth for households increases with each successively older age group, with the sharpest jumps between the below 25 group and 25-34; 25-34 and 35-44; and 45-54 and 55-64. This is to be expected, as households accumulate wealth over their life cycles, and can generate higher amounts of it when they are earning their highest incomes in their middle age. Households also save more when expecting a decline in income, so those nearing retirement are likely more inclined to save a larger share in preparation.  
+The average wealth for households increases with each successively older age group, with the sharpest jumps between the below 25 group and 25-34; 25-34 and 35-44; and 45-54 and 55-64. This is to be expected, as households accumulate wealth over their life cycles, and can generate higher amounts of it when they are earning their highest incomes in their middle age. 25-34 also marks the entry into the workforce for people with advanced degrees, hence the more than doubling of wealth. Households also save more when expecting a decline in income, so those nearing retirement are likely more inclined to save a larger share in preparation.  
 
-The corresponding portfolio shares show that house values' share decline with age. This is because households diversify as they age, therefore younger households' portfolios consist of a larger share of home value compared to other assets.
+The corresponding portfolio shares show that house values' share declines with age. This is because households diversify as they age, therefore younger households' portfolios consist of a larger share of home value compared to other assets.
 
 Mortgage debt peaks in the 25-34 age group (66.1%), then steadily declines with age. This may be because households often form families and buy homes in the 25-34 range, therefore that group is more likely to have a mortgage than the below 25 group. As the household ages, it will pay off more and more of its mortgage while accruing more wealth, leading to the mortgage making up a smaller share of their wealth over time. 
 
 Home equity generally decreases with age, with the exception of a slight uptick in 45-54. This decline can be linked with the decline in the share of home value.   
-Finally, business share increases until the 45-54 age group (35%), then starts to decline. This may be because households in this range have had time to build up their portfolios and invest in their own businesses, and are in their prime working and earning years. After this age range though, households may invest more of their money in safer assets as they near retirement.    
+
+Finally, business share increases until the 35-44 age group (35%), then starts to decline, before picking up slightly in the final 65+ group. This may be because middle aged households have had time to build up their portfolios and invest in their own businesses, and are in their prime working and earning years. After this age range though, households may invest more of their money in safer assets as they near retirement.    
 
 Overall, households gain wealth and diversify their portfolios with age.  
   
@@ -244,14 +248,14 @@ psid_age_wealth <- psid %>%
   mutate(
     age = factor(
       case_when(
-        AGE_HEAD < 25 ~ "Younger than 25",
+        AGE_HEAD < 25 ~ "Below 25",
         AGE_HEAD >= 25 & AGE_HEAD <= 34 ~ "25-34",
         AGE_HEAD >= 35 & AGE_HEAD <= 44 ~ "35-44",
         AGE_HEAD >= 45 & AGE_HEAD <= 54 ~ "45-54",
         AGE_HEAD >= 55 & AGE_HEAD <= 64 ~ "55-64",
-        AGE_HEAD >= 65 ~ "65 and older"
+        AGE_HEAD >= 65 ~ "65+"
       ),
-      levels = c("Younger than 25", "25-34", "35-44", "45-54", "55-64", "65 and older"),
+      levels = c("Below 25", "25-34", "35-44", "45-54", "55-64", "65+"),
       ordered = TRUE
     )
   ) %>%
@@ -287,7 +291,7 @@ psid_age_wealth %>%
 The distribution of spending in the PSID is right-skewed due to a small number of very high-spending households. All values are non-negative, and spending is more heavily concentrated below $100,000. The dispersion in expenditures is noticeably smaller than that observed in the wealth and income distributions.   
    
   
-```{r spending histogram, echo=FALSE}
+```{r spending histogram, echo=FALSE, fig.height=4, fig.width=6}
 ggplot(psid, aes(x = EXP/1000)) +
   geom_histogram(
     binwidth = 1,
@@ -306,10 +310,10 @@ ggplot(psid, aes(x = EXP/1000)) +
 ```  
   
 ## Question 2: Lorenz curve, spending   
-Following is the Lorenz curve for household spending. The curve lies noticeably below the 45-degree line of perfect equality, showing that expenditures are unevenly distributed across households. The bottom 50% of households account for 27% of total spending, while the bottom 75% account for 53%. At the upper end, the top 10% of households are responsible for 24% of all spending, and the top 1% account for 4%. Although spending is clearly unequal, the Lorenz curve indicates that expenditures are less unevenly distributed than either wealth or income.    
+Following is the Lorenz curve for household spending. The curve lies noticeably below the 45-degree line of perfect equality, showing that expenditures are unevenly distributed across households. The bottom 50% of households account for 26% of total spending, while the bottom 75% account for 52%. At the upper end, the top 10% of households are responsible for 25% of all spending, and the top 1% account for 4%. Although spending is clearly unequal, the Lorenz curve indicates that expenditure is less unevenly distributed than either wealth or income.    
    
   
-```{r lorenz curve of spending, echo=FALSE}
+```{r lorenz curve of spending, echo=FALSE, fig.height=4, fig.width=6}
 psid_lorenz_spending <- psid %>%
   filter(!is.na(EXP)) %>% 
   arrange(EXP) %>%
@@ -331,15 +335,14 @@ ggplot(psid_lorenz_spending, aes(x = rank_EXP, y = cumshare_EXP)) +
   theme_minimal(base_size = 12)
 ```  
   
-# RECHECK  
-## Question 3: Share of spending and average spending by quintile    
-Across the expenditure distribution, both spending shares and average expenditures rise steadily across quintiles, though the increases are not as sharp as those observed for income or wealth.  
+## Question 3: Share of spending and average spending by spending quintile    
+Across the expenditure distribution, both spending shares and average expenditures rise across quintiles, though the increases are not as sharp as those observed for income or wealth.  
 
 While inequality in spending does exist, with the sharpest gaps between quintiles 1 and 2 and quintiles 4 and 5, it is noticeably less pronounced than income or wealth.   
   
   
 ```{r expenditure share and mean by quintile, echo=FALSE}
-psid_spend_quintiles <- psid %>%
+psid %>%
   filter(!is.na(EXP)) %>%
   mutate(rank_EXP = cume_dist(EXP)) %>%
   mutate(quintile_EXP = 0) %>%
@@ -363,15 +366,15 @@ psid_spend_quintiles <- psid %>%
     spending_share = percent(share_total_spending, accuracy = 0.1)
   ) %>%
   select(quintile, starts_with("spending")) %>%
-  pander("Average spending and spending share by quintile")
+  pander("Average spending and spending share by spending quintile")
 
 ```  
   
 ## Question 4: Expenditure category shares by income quintiles    
   
-Looking at spending shares by category across income quintiles, we see that high and low income households have distinct spending patterns. The share of spending used on food at home and rent get lower the higher a household's income is. This is because these are necessities, and while everybody needs them, they will cost proportionally more for lower income households. 
+Looking at spending shares by category across income quintiles, we see that high and low income households have distinct spending patterns. The share of spending used on food at home and rent get lower the higher a household's income is. This is because these are necessities, and while everybody needs them, they will cost proportionally more for lower income households.  
 
-Food bought outside of the home has a similar pattern, where the bottom 3 quintiles spend a larger share of their total spending on it than the top 2 quintiles. Trips have the opposite pattern: the higher a household's income, the higher share of their spending goes towards trips. This may be because travel is a luxury good, for which demand goes up with income. Gas is somewhere in the middle: quintiles 2-4 have the highest share of spending towards gas.    
+Food bought outside of the home has a similar pattern, where the bottom 3 quintiles spend a larger share of their total spending on it than the top 2 quintiles. Trips have the opposite pattern: the higher a household's income, the higher the share of their spending going towards trips. This may be because travel is a luxury good, for which demand goes up with income. Gas is somewhere in the middle: quintiles 2-4 have the highest share of spending towards gas. Perhaps the first quintile tends not to have cars, and the top quintile's spending is higher, leading to the same gas spending as quintiles 2-4 being a smaller share of their total spending.
   
   
 ```{r share of expenditure in each category, echo=FALSE}
@@ -411,10 +414,10 @@ psid_expenditure_categories %>%
   
 ## Question 5: Highest exposure to changes in fuel prices    
 
-Based on the previous section, middle income (quintiles 2-4) households are most exposed to changes in fuel prices. These households may be more likely to own cars than the poorest households, and more financially burdened by the associated costs than the wealthiest households. It is also possible, however, that fuel price changes will impact the cost of trips, therefore affecting wealthy households who spend the most on travel.
+Based on the previous section, middle income (quintiles 2-4) households are most exposed to changes in fuel prices. These households may be more likely to own cars than the poorest households, and more financially burdened by the associated costs than the wealthiest households. It is also possible, however, that fuel price changes will impact the cost of trips, therefore affecting wealthy households who spend the most on travel.  
 
 ## Question 6: Share of income spent by income quintile    
-Savings rates rise consistently with income, while spending declines with income. Higher-income households devote a smaller share of their income to consumption, while lower-income households spend a much larger portion, often more than they earn. For example, the top quintile saves 57.4% of its income, whereas the bottom quintile has a negative savings rate, indicating that it spends beyond its income. As income increases, a greater fraction is saved rather than consumed. These differences in savings behavior contribute to widening wealth inequality, since higher savings rates enable greater future wealth accumulation.  
+Savings rates rise consistently with income, while spending declines with income. Higher-income households devote a smaller share of their income to consumption, while lower-income households spend a much larger portion, sometimes more than they earn. For example, the top quintile saves 57.4% of its income, whereas the bottom quintile has a negative savings rate, indicating that it spends beyond its income. As income increases, a greater fraction is saved rather than consumed. These differences in savings behavior contribute to widening wealth inequality, since higher savings rates enable greater future wealth accumulation.  
   
   
 
@@ -456,11 +459,11 @@ psid_savings_quintile %>%
 # Part 3: Comparing Distributions   
 
 ## Question 1: Lorenz Curve of income, wealth, spending   
-Plotting the Lorenz curves of household income, wealth, and spending in the PSID, we see that the curve for wealth is furthest away from the line of perfect equality, while the curve for spending is closest. This indicates that the distribution of wealth is more unequal than that of income and spending, and that income is more unequal than spending.   
+Plotting the Lorenz curves of household income, wealth, and spending in the PSID, we see that the curve for wealth is furthest away from the line of perfect equality, while the curve for spending is closest. This indicates that the distribution of wealth is more unequal than income and spending, and that spending is the most equal.
   
   
 
-```{r income, wealth, spending lorenz, echo=FALSE}
+```{r income, wealth, spending lorenz, echo=FALSE, fig.height=4, fig.width=6}
 perfect_equality <- data.frame(x = c(0, 25, 75, 100), y = c(0, 25, 75, 100))
 
 lorenz_income <- psid %>%
@@ -496,16 +499,15 @@ ggplot() +
     x = "Cumulative share of households",
     y = "Cumulative share of variable"
   ) +
-  theme(legend.position = "bottom",
-        title = element_text(face="bold"))
+  theme(legend.position = "bottom")
   
 ```
   
   
-## Question 2: Quintiles of income, wealth, spending    
+## Question 2: Share of total income, wealth, spending by respective quintiles    
 The quintile shares and coefficients of variation for income, wealth, and spending confirm that wealth is the most unequal, and spending is the most evenly distributed.  
 
-The top quintile of households by wealth hold 89.5% of all wealth, compared to the 51.1% and 40.8% of income and spending held by the top quintiles for those metrics. Similarly, the bottom quintile of households by wealth hold a negative share of total wealth, as they are in debt, while the equivalent quintile in income and spending hold low but positive shares of their respective variables.  
+The top quintile of households by wealth hold 89.5% of all wealth, compared to the 51.1% and 40.8% of income and spending held by the top quintiles for those metrics. Similarly, the bottom quintile of households by wealth hold a negative share of total wealth, as they are in debt, while the equivalent quintile in income and spending hold low but positive shares of their respective variables. Across all three metrics, the biggest gap is between quintiles 4 and 5, speaking to high inequality at the top of each distribution. However, this gap is widest for wealth, which increases more than seven-fold between quintiles 4 and 5.   
   
     
 ```{r quintiles of income, wealth, spending, echo=FALSE}
@@ -553,10 +555,10 @@ quintiles %>%
   mutate(income_share = percent(income_share),
          wealth_share = percent(wealth_share),
          spending_share = percent(spending_share)) %>%
-  pander(caption="Share of household income, wealth, and spending by respective quintiles")
+  pander(caption="Share of total household income, wealth, and spending by respective quintiles")
 ```
   
-The coefficients of variation for the three variables show the same pattern: household wealth has a coefficient of 4.65, followed by income which is 1.15, and spending which is 0.7. This tells us again that household wealth is the most unequally distributed of the three.   
+The coefficients of variation for the three variables show the same pattern: household wealth has a coefficient of 4.65, followed by income at 1.15, and spending at 0.7. This tells us again that household wealth is the most unequally distributed and spending is the least. 
    
   
 ```{r coefficient of variation multi, echo=FALSE}
@@ -568,9 +570,9 @@ data.frame(metric=c("Income", "Wealth", "Spending"),
   pander(caption="Coefficient of Variation: Household Income, Wealth, Spending")
 ```
 
-## Question 3: Income distribution quintiles: income, spending, and wealth    
+## Question 3: Income distribution quintiles: income, spending, and wealth     
 
-When aggregating households by income quintile, we see that income is likely more correlated with wealth than with spending. The bottom quintile of households based on income holds 3.1% and 3.6% respectively for income and wealth, yet they make up 9.1% of spending. Similarly, the top quintile holds 51.1% of income and 59.4% of wealth, while only accounting for 36.2% of spending. In addition to showing that income and wealth are likely more correlated than either are to spending, we also see once again that income and wealth are more unequal than spending. All 3 variables are positively correlated though: spending and wealth both increase with income.   
+When aggregating households by income quintile, we see that income is likely more correlated with wealth than with spending. The bottom quintile of households based on income holds 3.1% and 3.6% respectively for income and wealth, yet they make up 9.1% of spending. Similarly, the top quintile holds 51.1% of income and 59.4% of wealth, but only 36.2% of spending. In addition to showing that income and wealth are likely more correlated than either are to spending, we also see once again that income and wealth are more unequal than spending. All 3 variables are positively correlated though: spending and wealth both increase with income.   
   
   
   
@@ -595,25 +597,22 @@ quintile_income %>%
   mutate(income_share = percent(income_share),
          wealth_share = percent(wealth_share),
          spending_share = percent(spending_share)) %>%
-  pander(caption="Share of income, wealth, and spending by income quintiles")
+  pander(caption="Share of total income, wealth, and spending by income quintiles")
 ```
   
-# RECHECK   
-## Question 4: Wealth distribution quintiles    
-Looking at the wealth quintiles, we see that the highest and lowest quintiles have a relatively higher share of non-labor earnings in their income. This aligns with our discussions in class: at the top of the income distribution, households are likely to have businesses and investment income make up a larger share, while the bottom may receive more transfers. The quintile with the lowest share of non-labor income is the third quartile.    
+## Question 4: Wealth distribution quintiles     
+
+Looking at the wealth quintiles, we see that higher wealth households tend to have more income from non-labor sources, with the exception of quintile 2, which has a higher share than quintile 3 and 4. This aligns with our discussions in class: at the top of the wealth distribution, households are likely to have business and capital income make up a larger share. They also tend to be older, so part of the non-labor income could be from transfers. 
    
   
 ```{r wealth quintiles: non-labor earnings as share of total income, echo=FALSE}
 quintile_wealth <- psid %>%
+  filter(!is.na(WEALTH) & !is.na(INCOME)) %>%
   select(INCOME, WEALTH, HEAD_LABOR, SPOUSE_LABOR) %>%
-  mutate(quintile = case_when(WEALTH <= quantile(psid$WEALTH, 0.2) ~ "1",
-                              WEALTH <= quantile(psid$WEALTH, 0.4) ~ "2",
-                              WEALTH <= quantile(psid$WEALTH, 0.6) ~ "3",
-                              WEALTH <= quantile(psid$WEALTH, 0.8) ~ "4",
-                              TRUE ~ "5"),
+  mutate(quintile = ntile(WEALTH, 5),
          non_labor_earnings = (INCOME - (HEAD_LABOR+SPOUSE_LABOR))) %>%
   group_by(quintile) %>%
-  summarize(non_labor_income_share = mean(non_labor_earnings/INCOME, na.rm = TRUE)) %>%
+  summarize(non_labor_income_share = sum(non_labor_earnings, na.rm=TRUE)/sum(INCOME, na.rm = TRUE)) %>%
   select(quintile, non_labor_income_share)
 
 quintile_wealth %>%
